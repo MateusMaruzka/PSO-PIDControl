@@ -317,14 +317,14 @@ def resultados(coefs, converg,P,Ts,tf):
 
         ax.legend(loc = 'lower right')
 
-    fig.savefig('respostas.pdf', format='pdf')
+    #fig.savefig('respostas.pdf', format='pdf')
    
     fig, ax = plt.subplots(1)
     ax.set_ylabel('ISE')
     ax.set_xlabel('Iterações')
     for i in range(len(converg)):
         ax.plot(converg[i])    
-    fig.savefig('convergencia.pdf', format='pdf')
+    #fig.savefig('convergencia.pdf', format='pdf')
     
     fig,ax = plt.subplots(1)
     ax.set_ylabel('y(t)')
@@ -332,7 +332,7 @@ def resultados(coefs, converg,P,Ts,tf):
     t,y = scipy.signal.step(P, T=t[0:len(t)//3])
     plt.ylim([0, 1.1])
     ax.plot(t,y, '-')
-    fig.savefig('resposta_degrau.pdf',format = 'pdf')
+    #fig.savefig('resposta_degrau.pdf',format = 'pdf')
     step_info(t,y)
 
     plt.show()
@@ -340,26 +340,13 @@ def resultados(coefs, converg,P,Ts,tf):
 
 def step_info(t,yout): 
     #t = iter(t1)
-    
-    
     print ("OS: %f%s"%((yout.max()/yout[-1]-1)*100,'%'))
     print ("Tr %f"%(t[next(i for i in range(0,len(yout)-1) if yout[i]>yout[-1]*.90)]-t[0]))
     A = abs(yout - 1) < 0.02 # ts
     print("Ts %f"%t[A][0])
     
-#    for i in range(len(yout)): 
-#        if np.abs(yout[-i] -1)> 0.02:
-#            print(t[-i])
-#            break
-
-   # print ((t[next(i for i in range(2,len(yout)-1) if np.abs(yout[i]/yout[-1]) > 1.02)]-t1[0]))
-
-
 def main():
     np.random.seed(0)
-    
-    
-    
     
     DIM = 2 #dimensoes do problema
     T_ENXAME = 50 #tamanho do enxame
@@ -367,7 +354,6 @@ def main():
     Wmax = 0.7#coef inercial max
     Wmin = 0.2#coef inercial min
     Xlim = 10 # limite do espaço de busca
-    
     
     # Parametros da simulacao do controle pi
     #P = scipy.signal.TransferFunction([-2.293*10**3, -1.067*10**7,-2.66*10**8], [1.301, 3.024*10**2, 2.556*10**5, 5.703*10**6])
@@ -409,8 +395,6 @@ def main():
 #    kp_cc = (t/theta)*(0.9 + theta/(12*t))/k
 #    ti_cc = theta*(30+3/t)/(13+8/t)
 
-    
-    
     coefs_aux, fitIter_aux = pso(P,Ts,tf)
     coefs.append(coefs_aux)
     fitIter.append(fitIter_aux)

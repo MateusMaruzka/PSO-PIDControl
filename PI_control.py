@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 P = scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1])
 
 # Discrete process for simulation
-Ts = 0.1                    # time step
+Ts = 0.5                    # time step
 Pd = P.to_discrete(Ts)
 
 B = Pd.num                  # zeros
@@ -85,9 +85,9 @@ r = r[slack:]
 t = np.arange(0, tf + Ts, Ts)
 fig, ax = plt.subplots(2, sharex=True)
 ax[0].plot(t, r, 'k--')
-ax[0].plot(t, y)
+ax[0].step(t, y)
 ax[0].set_ylabel('y(t)')
-ax[1].plot(t, u)
+ax[1].step(t, u)
 ax[1].set_ylabel('u(t)')
 plt.xlabel('t (s)')
 plt.xlim([0, tf])

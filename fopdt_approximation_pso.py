@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Sep 21 18:02:06 2018
-@author: Maruzketi
+@author: Maruzka
 """
 
 """
@@ -14,7 +14,6 @@ F(s) = exp(-Ls)/(Ts+1)
 
 import numpy as np
 import scipy.signal
-import math 
 import matplotlib.pyplot as plt
 
 
@@ -40,7 +39,7 @@ def itae(e):
     return np.dot(np.abs(e),k)
 
 
-def crosscorr(x,y1,t1):
+def compara_sinais(x,y1,t1):
     fit = np.zeros(len(x))
     for i in range(len(x)):
         L = x[i][0]
@@ -48,8 +47,7 @@ def crosscorr(x,y1,t1):
         G = scipy.signal.TransferFunction(np.polymul([1], [-L/2,1]), np.polymul([T,1], [L/2, 1]))
 
         t,y2 = scipy.signal.step(G,T =t1)
-        #fit[i] = np.correlate(y1,y2)
-        fit[i] = np.sum((y1-y2)**2)
+        fit[i] = np.sum((y2-y1)**2)
     return fit
 
 def atualizaFitness(posAtual,fitpBest,pbest):
@@ -57,7 +55,7 @@ def atualizaFitness(posAtual,fitpBest,pbest):
     P = scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1])
 
     t1,y1 = scipy.signal.step(P)
-    f = crosscorr(posAtual,y1,t1)
+    f = compara_sinais(posAtual,y1,t1)
     A = f < fitpBest # vetor de decisao
     fitpBest[A] = f[A]
     pbest[A] = posAtual[A]
@@ -79,7 +77,7 @@ def atualizaVel(x,v,pbest, gbest):
 #    www.append(w)
 
     #vel(t+1) =  w*vel(t) + c1*r1*(Pbest(t) - Pos(t))+ c2*r2*(gbest(t) - Pos(t))
-    return 0.4*v + c1*r1*(pbest - x) + c2*r2*(np.tile(gbest,[T_ENXAME,1])-x)
+    return 0.8*v + c1*r1*(pbest - x) + c2*r2*(np.tile(gbest,[T_ENXAME,1])-x)
    
 
 def pso(T_ENXAME, DIM):
@@ -105,12 +103,54 @@ def pso(T_ENXAME, DIM):
 def step_info(t,yout): 
     #t = iter(t1)
     
-    
     print ("OS: %f%s"%((yout.max()/yout[-1]-1)*100,'%'))
     print ("Tr %f"%(t[next(i for i in range(0,len(yout)-1) if yout[i]>yout[-1]*.90)]-t[0]))
     A = abs(yout - 1) < 0.02 # ts
     print("Ts %f"%t[A][0])
     
+   
+def maruzka_plot(x,y, font_size = 12, figsize = (9,6), fontfamily = "Times New Roman", 
+                 xlabel = "x label", ylabel = "y label", legends = ["legends1", "legends2"], 
+                 title = "MyTitle"):
+    
+    #    figure generation      
+    plt.rcParams['figure.figsize'] = figsize
+    
+    # tipo de fonte times new roman    
+    plt.rcParams["font.family"] = fontfamily
+    
+    # tamanho da fonte da legenda
+    plt.rcParams['legend.fontsize'] = font_size
+    
+    # cores
+    
+    colors = ['b','g','r','m','k',]
+    
+    if len(x[0]) != len(y[0]):
+        print("Algo de errado não está certo")
+    else:   
+        lines = []
+        t = iter(colors)
+        for i,j in zip(x, y):
+            line, = plt.step(i, j, '-',  color=next(t), linewidth=1.2)
+            lines.append(line)
+    #ax1.plot(x, y1, color=[0.5, 0.5, 0.5], linewidth=1.2)
+    plt.xlabel(xlabel, fontsize=12)
+    plt.ylabel(ylabel, fontsize=12)
+    
+    # plt.title(title, loc='center')  
+    
+    # melhor lugar de legenda
+    #plt.legend()
+    plt.legend(tuple(lines), tuple(legends), loc = 'best')
+    # plt.legend((line6, line1, line2, line3, line4, line5, line6), (legend6, legend1, legend2, legend3, legend4, legend5), loc='best')
+    plt.show()
+    
+  # plt.savefig("./stoi_result.svg")
+    
+   # plt.savefig("./stoi_result.jpg")
+    
+
 
 def main():
    gBest = pso(50, 2)
@@ -119,12 +159,11 @@ def main():
    T = gBest[1]
    t1,y1 = scipy.signal.step(scipy.signal.TransferFunction(np.polymul([1], [-L/2,1]), np.polymul([T,1], [L/2, 1])), N=1000)
    t2,y2 = scipy.signal.step(scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1]), T = t1)
-   plt.plot(t1,y1)
-   plt.figure()
-   plt.plot(t2,y2)
+
    step_info(t1,y1)
    step_info(t2,y2)
-    
+   
+   maruzka_plot((t1,t2),(y1,y2), xlabel = "t (s)", ylabel = "Saída",legends=["FOPDT","4º Ordem"])
 if __name__ == "__main__":
     main()
          
