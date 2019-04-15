@@ -14,32 +14,18 @@ F(s) = exp(-Ls)/(Ts+1)
 
 import numpy as np
 import scipy.signal
+import math
 import matplotlib.pyplot as plt
 
-from step import step
-
-
+from pypid_control_lib import step, step_info
+from pypso_lib import limitaRegiao
 # Parametros da simulacao do controle pi
 #P = scipy.signal.TransferFunction([1], [1, 9,23,15])
 #T_ENXAME = 50
 
-def limitaRegiao(x, x_lim):
-    A = x > x_lim
-    x[A] = x_lim
-    A = x < 0
-    x[A] = 0
-
-def ise(e):
-    return np.sum(e**2,axis=1)
-
-def iae(e):
-    return np.sum(np.abs(e),axis=1)
-
-def itae(e):
-    k = np.arange(len(e))
-    return np.dot(np.abs(e),k)
-
-
+def linearW(i,Imax, Wmax = 0.9, Wmin = 0.2):
+   return Wmax - (Wmax - Wmin)*i/Imax
+    
 def compara_sinais(x,y1,t1, Ts):
     fit = np.zeros(len(x))
     for i in range(len(x)):
@@ -47,8 +33,8 @@ def compara_sinais(x,y1,t1, Ts):
         T = x[i][1]
         G = scipy.signal.TransferFunction(np.polymul([1], [-L/2,1]), np.polymul([T,1], [L/2, 1]))
         Gd = G.to_discrete(Ts)
-        #y2,t = step(Gd.num, Gd.den, Ts, 20)
-        t,y2 = scipy.signal.step(G,T =t1)
+        y2,t = step(Gd.num, Gd.den, Ts, 20)
+        #t,y2 = scipy.signal.step(G,T =t1)
         fit[i] = np.sum((y2-y1)**2)
     return fit
 
@@ -58,8 +44,8 @@ def atualizaFitness(posAtual,fitpBest,pbest):
 
     P = scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1])
     Pd = P.to_discrete(Ts)
-    #y1,t1 = step(Pd.num, Pd.den, Ts, 20)
-    t1,y1 = scipy.signal.step(P)
+    y1,t1 = step(Pd.num, Pd.den, Ts, 20)
+    #t1,y1 = scipy.signal.step(P)
     f = compara_sinais(posAtual,y1,t1, Ts)
     A = f < fitpBest # vetor de decisao
     fitpBest[A] = f[A]
@@ -67,18 +53,14 @@ def atualizaFitness(posAtual,fitpBest,pbest):
     
     
     
-def atualizaVel(x,v,pbest, gbest, num_particulas, func_coef_inercial):
+def atualizaVel(x,v,pbest, gbest, num_particulas, func_coef_inercial, c1 = 2, c2 = 2):
     atualizaVel.iteracoes = atualizaVel.iteracoes + 1
-    print(atualizaVel.i)
-   # new_vel = np.zeros([T_ENXAME,DIM])
-    c1 = 2
+
     r1 = np.random.rand() # entre 0 e 1
-    c2 = 2
     r2 = np.random.rand() # entre 0 e 1
    
-    # w = func_coef_inercial(atualizaVel.iteracoes)
+    w = func_coef_inercial(atualizaVel.iteracoes,100)
     
-    #vel(t+1) =  w*vel(t) + c1*r1*(Pbest(t) - Pos(t))+ c2*r2*(gbest(t) - Pos(t))
     return w*v + c1*r1*(pbest - x) + c2*r2*(np.tile(gbest,[num_particulas,1])-x)
    
 
@@ -96,21 +78,11 @@ def pso(T_ENXAME, DIM):
         i = i + 1
         atualizaFitness(x,fitPbest,pBest) # atualiza fitness atual e pBest 
         gb = np.argmin(fitPbest) # gb = indice da particula com a melhor posiçao
-        v = atualizaVel(x,v,pBest,pBest[gb], T_ENXAME, 0)  #wIter é um vetor com os valores de w a cada iteraçao
-        #  elitismo = x[gb]
+        v = atualizaVel(x,v,pBest,pBest[gb], T_ENXAME, linearW)  #wIter é um vetor com os valores de w a cada iteraçao
         x = x + v
         limitaRegiao(x, 100)
     
     return pBest[gb]
-    
-def step_info(t,yout): 
-    #t = iter(t1)
-    
-    print ("OS: %f%s"%((yout.max()/yout[-1]-1)*100,'%'))
-    print ("Tr %f"%(t[next(i for i in range(0,len(yout)-1) if yout[i]>yout[-1]*.90)]-t[0]))
-    A = abs(yout - 1) < 0.02 # ts
-    print("Ts %f"%t[A][0])
-    
    
 def maruzka_plot(x,y, font_size = 12, figsize = (9,6), fontfamily = "Times New Roman", 
                  xlabel = "x label", ylabel = "y label", legends = ["legends1", "legends2"], 
@@ -126,8 +98,7 @@ def maruzka_plot(x,y, font_size = 12, figsize = (9,6), fontfamily = "Times New R
     plt.rcParams['legend.fontsize'] = font_size
     
     # cores
-    
-    colors = ['b','g','r','m','k',]
+    colors = ['k','r','b','m','y',]
     
     if len(x[0]) != len(y[0]):
         print("Algo de errado não está certo")
@@ -144,15 +115,11 @@ def maruzka_plot(x,y, font_size = 12, figsize = (9,6), fontfamily = "Times New R
     # plt.title(title, loc='center')  
     
     # melhor lugar de legenda
-    #plt.legend()
     plt.legend(tuple(lines), tuple(legends), loc = 'best')
     # plt.legend((line6, line1, line2, line3, line4, line5, line6), (legend6, legend1, legend2, legend3, legend4, legend5), loc='best')
+    
+    plt.savefig("./fopdt_vs_4ordem.svg")
     plt.show()
-    
-  # plt.savefig("./stoi_result.svg")
-    
-   # plt.savefig("./stoi_result.jpg")
-    
 
 
 def main():
@@ -170,10 +137,18 @@ def main():
    P2d = P2.to_discrete(Ts)
    y2,t2 = step(P2d.num, P2d.den, Ts, 20)
 
+   kend = math.ceil(20/Ts) + 1
+   t1 = t1[:kend-10]
+   y1 = y1[:kend-10]
+   t2 = t1[:kend-10]
+   y2 = y2[:kend-10]
+   
    step_info(t1,y1)
    step_info(t2,y2)
    
    maruzka_plot((t1,t2),(y1,y2), xlabel = "t (s)", ylabel = "Saída",legends=["FOPDT","4º Ordem"])
+
+
 if __name__ == "__main__":
     main()
          
