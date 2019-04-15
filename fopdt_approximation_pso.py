@@ -16,11 +16,12 @@ import numpy as np
 import scipy.signal
 import matplotlib.pyplot as plt
 
+from step import step
 
 
 # Parametros da simulacao do controle pi
 #P = scipy.signal.TransferFunction([1], [1, 9,23,15])
-T_ENXAME = 50
+#T_ENXAME = 50
 
 def limitaRegiao(x, x_lim):
     A = x > x_lim
@@ -39,45 +40,46 @@ def itae(e):
     return np.dot(np.abs(e),k)
 
 
-def compara_sinais(x,y1,t1):
+def compara_sinais(x,y1,t1, Ts):
     fit = np.zeros(len(x))
     for i in range(len(x)):
         L = x[i][0]
         T = x[i][1]
         G = scipy.signal.TransferFunction(np.polymul([1], [-L/2,1]), np.polymul([T,1], [L/2, 1]))
-
+        Gd = G.to_discrete(Ts)
+        #y2,t = step(Gd.num, Gd.den, Ts, 20)
         t,y2 = scipy.signal.step(G,T =t1)
         fit[i] = np.sum((y2-y1)**2)
     return fit
 
 def atualizaFitness(posAtual,fitpBest,pbest):
     
-    P = scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1])
+    Ts = 0.1
 
+    P = scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1])
+    Pd = P.to_discrete(Ts)
+    #y1,t1 = step(Pd.num, Pd.den, Ts, 20)
     t1,y1 = scipy.signal.step(P)
-    f = compara_sinais(posAtual,y1,t1)
+    f = compara_sinais(posAtual,y1,t1, Ts)
     A = f < fitpBest # vetor de decisao
     fitpBest[A] = f[A]
     pbest[A] = posAtual[A]
     
     
     
-def atualizaVel(x,v,pbest, gbest):
-    
+def atualizaVel(x,v,pbest, gbest, num_particulas, func_coef_inercial):
+    atualizaVel.iteracoes = atualizaVel.iteracoes + 1
+    print(atualizaVel.i)
    # new_vel = np.zeros([T_ENXAME,DIM])
     c1 = 2
     r1 = np.random.rand() # entre 0 e 1
     c2 = 2
     r2 = np.random.rand() # entre 0 e 1
    
-#    if j < Imax:
-#        w = Wmax - (Wmax - Wmin)*j/Imax
-#    else:
-#        w = Wmin
-#    www.append(w)
-
+    # w = func_coef_inercial(atualizaVel.iteracoes)
+    
     #vel(t+1) =  w*vel(t) + c1*r1*(Pbest(t) - Pos(t))+ c2*r2*(gbest(t) - Pos(t))
-    return 0.8*v + c1*r1*(pbest - x) + c2*r2*(np.tile(gbest,[T_ENXAME,1])-x)
+    return w*v + c1*r1*(pbest - x) + c2*r2*(np.tile(gbest,[num_particulas,1])-x)
    
 
 def pso(T_ENXAME, DIM):
@@ -88,12 +90,13 @@ def pso(T_ENXAME, DIM):
     #pbest recebe o valor de x por ser a única posição conhecida da partic
     pBest = x
     fitPbest = np.inf*np.ones(len(x)) 
+    atualizaVel.iteracoes = 0
     i = 0
     while i < 100:
         i = i + 1
         atualizaFitness(x,fitPbest,pBest) # atualiza fitness atual e pBest 
         gb = np.argmin(fitPbest) # gb = indice da particula com a melhor posiçao
-        v = atualizaVel(x,v,pBest,pBest[gb])  #wIter é um vetor com os valores de w a cada iteraçao
+        v = atualizaVel(x,v,pBest,pBest[gb], T_ENXAME, 0)  #wIter é um vetor com os valores de w a cada iteraçao
         #  elitismo = x[gb]
         x = x + v
         limitaRegiao(x, 100)
@@ -157,8 +160,15 @@ def main():
    print(gBest)
    L = gBest[0]
    T = gBest[1]
-   t1,y1 = scipy.signal.step(scipy.signal.TransferFunction(np.polymul([1], [-L/2,1]), np.polymul([T,1], [L/2, 1])), N=1000)
-   t2,y2 = scipy.signal.step(scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1]), T = t1)
+   Ts = 0.1
+   
+   P1 = scipy.signal.TransferFunction(np.polymul([1], [-L/2,1]), np.polymul([T,1], [L/2, 1]))
+   P1d = P1.to_discrete(Ts)
+   y1,t1 = step(P1d.num, P1d.den, Ts, 20)
+
+   P2 = scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1])
+   P2d = P2.to_discrete(Ts)
+   y2,t2 = step(P2d.num, P2d.den, Ts, 20)
 
    step_info(t1,y1)
    step_info(t2,y2)
