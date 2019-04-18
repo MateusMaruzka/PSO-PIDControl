@@ -118,12 +118,12 @@ def maruzka_plot(x,y, font_size = 12, figsize = (9,6), fontfamily = "Times New R
     plt.legend(tuple(lines), tuple(legends), loc = 'best')
     # plt.legend((line6, line1, line2, line3, line4, line5, line6), (legend6, legend1, legend2, legend3, legend4, legend5), loc='best')
     
-    plt.savefig("./fopdt_vs_4ordem.svg")
+    plt.savefig("./imagens/"+title+".svg")
     plt.show()
 
 
 def main():
-   gBest = pso(50, 2)
+   gBest = pso(100, 2)
    print(gBest)
    L = gBest[0]
    T = gBest[1]
@@ -146,7 +146,7 @@ def main():
    step_info(t1,y1)
    step_info(t2,y2)
    
-   maruzka_plot((t1,t2),(y1,y2), xlabel = "t (s)", ylabel = "Saída",legends=["FOPDT","4º Ordem"])
+   maruzka_plot((t1,t2),(y1,y2), xlabel = "t (s)", ylabel = "Saída",legends=["FOPDT","4º Ordem"], title="fopdt_approx")
 
 
 if __name__ == "__main__":

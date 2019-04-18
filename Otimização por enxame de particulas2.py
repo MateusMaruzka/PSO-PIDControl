@@ -16,72 +16,14 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
-
+from pypid_control_lib import imc, simc, isimc, zn, cc, iae, ise, itae, step_info
+from pypso_lib import limitaRegiao
 
 """
 padé approx
 
 exp(-theta*s) = ((-theta/2)*s+1)/((theta/2)*s+1)
 """
-
-#------ MÉTODOS ALTERNATIVOS DE SINTONIA ------------
-
-def imc(ts, tau):#qndo o processo possui atraso
-    
-    theta = ts
-    k=1
-    l = 2*(tau+theta)/3
-    l = theta #skogestad 03
-    kp = tau/(k*(l+theta))
-    ti = min(tau,4*(l+theta)) 
-
-    return([kp, 1/ti])
-    
-def simc(ts, tau):
-    theta = ts
-    t = tau
-    k = 1
-    kp = (2*t + theta)/(3*theta*k)
-    ti = min(t+theta/2, 8*theta)
-    
-    return np.array([kp, 1/ti])
-
-def isimc(ts,tau):
-    theta = ts
-    k=1
-    t = tau# da func de transf
-    tc = theta
-    ti = min(t+theta/3, 4*(tc+theta))
-    kc = (t+theta/3)/(k*(tc + theta))
-    return np.array([kc, kc/ti])
-    
-def zn(ts,tau):
-    Kp_zn = 0.9*tau/ts
-    Ti_zn = 3*ts
-    return np.array([Kp_zn, 1/Ti_zn])
-
-
-
-def cc(ts,tau):
-    theta = ts
-    t = tau
-    k=1
-    kp = (t/theta)*(0.9 + theta/(12*t))/k
-    ti = theta*(30+3/t)/(13+8/t)
-
-    return np.array([kp, 1/ti])
-
-#----------------------------------------------------
-
-def ise(e):
-    return np.sum(e**2,axis=1)
-
-def iae(e):
-    return np.sum(np.abs(e),axis=1)
-
-def itae(e):
-    return np.dot(np.abs(e),np.arange(len(e[0])))
-
 
 def picontrol2(P,ts,tf,x):
     
@@ -169,11 +111,6 @@ def picontrol(P, ts, tf,x, T_ENXAME):
 #        
     return e.T, u.T
 
-def limitaRegiao(x, x_lim):
-    A = x > x_lim
-    x[A] = x_lim
-    A = x < 0
-    x[A] = 0
     
 def limitaVelocidade(v, v_lim):
     A = v > v_lim
@@ -218,8 +155,8 @@ def atualizaVel(x,v,pbest, gbest, w, c1,c2, k):
 
 def pso(P,ts,tf,T_ENXAME = 50,    
         Imax = 20, #Numero maximo de iteraçoes para calculo do coef inercial (w)
-        Wmax = 0.9,#coef inercial max
-        Wmin = 0.8 #coef inercial min   
+        Wmax = 0.8,#coef inercial max
+        Wmin = 0.4 #coef inercial min   
    ):
     
     
@@ -238,7 +175,7 @@ def pso(P,ts,tf,T_ENXAME = 50,
     atualizaFitness(P,ts,tf,fitPbest,pBest,x, 0) # atualiza fitness atual e pBest 
     gb = np.argmin(fitPbest)
     fitIter.append(fitPbest[gb])
-    for j in range(30):
+    for j in range(40):
         
         v = atualizaVel(x,v,pBest,pBest[gb],coefInercial(Wmin,Wmax,j,50),c2,c1,1)  #wIter é um vetor com os valores de w a cada iteraçao
         limitaVelocidade(v, 5000)
@@ -247,15 +184,7 @@ def pso(P,ts,tf,T_ENXAME = 50,
         atualizaFitness(P,ts,tf,fitPbest,pBest,x,0) # atualiza fitness atual e pBest 
         gb = np.argmin(fitPbest)
         fitIter.append(fitPbest[gb])
-        
-   
-    
-#    print('Melhor solucão: %s' %pBest[gb])
-#    print('Melhor fitness: %f' %fitPbest[gb])
-#    plt.figure()
-#    plt.plot(fitIter)
-#    plt.legend(['ISE', 'TVC'])
-#    
+          
     return pBest[gb], fitIter
     #return fitIter
 
@@ -263,8 +192,6 @@ def pso(P,ts,tf,T_ENXAME = 50,
 def bbpso(P,ts,tf,T_ENXAME = 50):
     """
     Bare bone PSO
-    
-    Retorna gbest e um vetor com o gbest a cada iteração
     """
     
     DIM = 2 #dimensoes do problema    
@@ -283,13 +210,6 @@ def bbpso(P,ts,tf,T_ENXAME = 50):
         atualizaFitness(P,ts,tf,fitPbest,pBest,x,0) # atualiza fitness atual e pBest 
         gb = np.argmin(fitPbest)
         fitIter.append(fitPbest[gb])
-
-
-#    print('Melhor solucão: %s' %pBest[gb])
-#    print('Melhor fitness: %f' %fitPbest[gb])
-#    plt.figure()
-#    plt.plot(fitIter)
-#    plt.legend(['ISE', 'TVC'])
 
     return pBest[gb], fitIter
     #return fitIter
@@ -337,13 +257,6 @@ def resultados(coefs, converg,P,Ts,tf):
 
     plt.show()
 
-
-def step_info(t,yout): 
-    #t = iter(t1)
-    print ("OS: %f%s"%((yout.max()/yout[-1]-1)*100,'%'))
-    print ("Tr %f"%(t[next(i for i in range(0,len(yout)-1) if yout[i]>yout[-1]*.90)]-t[0]))
-    A = abs(yout - 1) < 0.02 # ts
-    print("Ts %f"%t[A][0])
     
 def main():
     np.random.seed(0)
@@ -355,45 +268,19 @@ def main():
     Wmin = 0.2#coef inercial min
     Xlim = 10 # limite do espaço de busca
     
-    # Parametros da simulacao do controle pi
-    #P = scipy.signal.TransferFunction([-2.293*10**3, -1.067*10**7,-2.66*10**8], [1.301, 3.024*10**2, 2.556*10**5, 5.703*10**6])
-    #P = scipy.signal.TransferFunction([30303.03],[1, 30303.03])
-    #P = scipy.signal.TransferFunction([1],[10, 1])
     P = scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1])
-
-    
-    #P = scipy.signal.TransferFunction(np.polymul([1], [-1/2,1]), np.polymul([10,1], [1/2, 1]))
+   #P = scipy.signal.TransferFunction(np.polymul([1], [-1/2,1]), np.polymul([10,1], [1/2, 1]))
 
     Ts = 0.1  # time step
-    tf = 40 # tempo de simulação
-    
-#    x1 = 15*np.random.randn(T_ENXAME,DIM)
-#    x2 = np.copy(x1)
-
-    
+    tf = 35 # tempo de simulação
+       
     coefs = []
     coefs_aux = []
     fitIter = []
     fitIter_aux = []
 
-
- #   k = 1
     tau = 2.5128
     atraso = 1.8463
- #   theta = atraso
- #   t = tau
-    
-#    # ZIEGLER NICHOLS
-#    kp_zn= 0.9*tau/atraso
-#    ti_zn = atraso/0.3
-#    
-#    # SIMC
-#    kp_simc = (2*t + theta)/(3*theta*k)
-#    ti_simc = min(t+theta/2, 8*theta)
-#    
-#    # COHEN COON
-#    kp_cc = (t/theta)*(0.9 + theta/(12*t))/k
-#    ti_cc = theta*(30+3/t)/(13+8/t)
 
     coefs_aux, fitIter_aux = pso(P,Ts,tf)
     coefs.append(coefs_aux)

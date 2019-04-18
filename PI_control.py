@@ -82,14 +82,25 @@ e = e[slack:]
 r = r[slack:]
 
 # Plot time response
+
+
 t = np.arange(0, tf + Ts, Ts)
+
+t2,y2 = scipy.signal.dstep((Pd.num, Pd.den, Ts), t=t)
 fig, ax = plt.subplots(2, sharex=True)
 ax[0].plot(t, r, 'k--')
 ax[0].step(t, y)
+ax[0].step(t2, y2[0])
+
 ax[0].set_ylabel('y(t)')
 ax[1].step(t, u)
 ax[1].set_ylabel('u(t)')
 plt.xlabel('t (s)')
 plt.xlim([0, tf])
 plt.show()
+
+
+#f __main__ == "__main__":
+    
+    
     
