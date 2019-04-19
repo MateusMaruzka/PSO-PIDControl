@@ -127,22 +127,22 @@ def main():
    print(gBest)
    L = gBest[0]
    T = gBest[1]
-   Ts = 0.1
    
+   Ts = 0.5
+   tf = 20
+   t = np.arange(0, tf + Ts, Ts)
+
    P1 = scipy.signal.TransferFunction(np.polymul([1], [-L/2,1]), np.polymul([T,1], [L/2, 1]))
    P1d = P1.to_discrete(Ts)
+   #t1,y1 = scipy.signal.dstep(P1d, t=t)
    y1,t1 = step(P1d.num, P1d.den, Ts, 20)
 
    P2 = scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1])
    P2d = P2.to_discrete(Ts)
+   #t2,y2 = scipy.signal.dstep(P2d,n = len())
+
    y2,t2 = step(P2d.num, P2d.den, Ts, 20)
 
-   kend = math.ceil(20/Ts) + 1
-   t1 = t1[:kend-10]
-   y1 = y1[:kend-10]
-   t2 = t1[:kend-10]
-   y2 = y2[:kend-10]
-   
    step_info(t1,y1)
    step_info(t2,y2)
    
