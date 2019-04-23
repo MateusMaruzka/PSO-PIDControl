@@ -87,6 +87,7 @@ r = r[slack:]
 t = np.arange(0, tf + Ts, Ts)
 
 t2,y2 = scipy.signal.dstep((Pd.num, Pd.den, Ts), t=t)
+
 fig, ax = plt.subplots(2, sharex=True)
 ax[0].plot(t, r, 'k--')
 ax[0].step(t, y)

@@ -32,7 +32,7 @@ def main():
     n_p = 20
     P = ss.TransferFunction([1], [1, 4, 6, 4, 1])
     gb, fitIter = pso.pso(fObj_pid, n_p , 2, _alfa=15, _Wmin=wmin, _Wmax=wmax, _c1 = c1, _c2 = c2, P=P, ts=Ts, tf=Tf, LAMBDA=l)    
-    f_name = "dados/pid_pso_n3.pickle"
+    f_name = "dados/pid_pso_n2.pickle"
     
     with open(f_name, "wb") as f:
     
@@ -45,10 +45,12 @@ def main():
                 'Lambda' : l,
                 'Partic' : n_p}
         
-        pso_result = {'Gbest': gb,
+        pso_result = {'Process': P, 
+                      'Gbest': gb,
+                      'Params' : data,
                       'fitIter' : fitIter } 
         
-        pickle.dump(data,f)
+        #pickle.dump(data,f)
         pickle.dump(pso_result, f)
 
 if __name__ == "__main__":
