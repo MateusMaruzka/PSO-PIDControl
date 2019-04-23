@@ -70,20 +70,22 @@ def pso_of_psos(x):
     fit = []
     for i in range(len(x)):
         a = x[i]
-        alfa = a[0]
-        wmin = a[1] if a[1] < 1 else 0.1
-        a[1] = wmin
-        wmax = a[2] if a[2] < 1 else 0.9
-        a[2] = wmax
-        c1   = a[3] 
-        c2   = a[4]
-        n_partic = int(a[5]) + 1
+        # alfa = a[0]
+        wmin = a[0] #if a[0] < 1 else 0.1
+        #x[i][0] = wmin
+        wmax = a[1] #if a[1] < 1 else 0.9
+       # x[i][1] = wmax
+        c1   = a[2] #if a[2] > 0 else 0.5
+       # x[i][2] = c1
+        c2   = a[3] #if a[3] > 0 else 0.5
+       # x[i][3] = c2
+        # n_partic = int(a[5]) + 1
         
         P = scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1])
         Ts = 0.1
         Tf = 20
         fitIter = []
-        gb, fitIter = ppl.pso(func_pid, int(n_partic) , 2, _alfa=alfa, _Wmin=wmin, _Wmax=wmax, _c1 = c1, _c2 = c2, P=P, ts=Ts, tf=Tf, LAMBDA=0)    
+        gb, fitIter = ppl.pso(func_pid, 20 , 2, _alfa=15, _Wmin=wmin, _Wmax=wmax, _c1 = c1, _c2 = c2, P=P, ts=Ts, tf=Tf, LAMBDA=2)    
         fit.append(fitIter.pop())
 
 
@@ -94,11 +96,11 @@ def pso_of_psos(x):
 def main():
 
 
-    gb, fit = ppl.pso(pso_of_psos, 100, 6)
+    gb, fit = ppl.pso(pso_of_psos, 100, 4)
     #f,e,u,y = func_fitness(np.array([[2.4,2.4],[5.8,5.8]]), P, Ts,Tf, 0)
     print(gb)
     print(fit.pop())
-    plt.plot(np.log10(fit))
+    plt.plot(fit)
     
     
 if __name__ == "__main__":

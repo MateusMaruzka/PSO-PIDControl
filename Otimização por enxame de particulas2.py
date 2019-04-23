@@ -111,17 +111,8 @@ def picontrol(P, ts, tf,x, T_ENXAME):
 #        
     return e.T, u.T
 
+  
     
-def limitaVelocidade(v, v_lim):
-    A = v > v_lim
-    v[A] = v_lim
-    A = v < -v_lim
-    v[A] = -v_lim
-    
-    
-def coefInercial(Wmin, Wmax, i, imax):
-    return (Wmax - (Wmax - Wmin)*i/imax)
-
 def atualizaFitness(P,ts,tf,fitpBest,pbest,x,LAMBDA):
     #y = sphereFunction_v2(posAtual)
     #LAMBDA = 1 # coeficiente de supressao de acoes de controle
@@ -135,84 +126,7 @@ def atualizaFitness(P,ts,tf,fitpBest,pbest,x,LAMBDA):
     fitpBest[A] = f[A]
     pbest[A] = x[A]
     
-def x_bbpso(pBest, fit_pBest, DIM, T_ENXAME):
-    
-    #np.tile(pBest[np.argmin(fit_pBest)],[T_ENXAME,1]) # Cria uma matriz com GBEST em cada linha
-    mean = 0.5*(pBest + np.tile(pBest[np.argmin(fit_pBest)],[T_ENXAME,1]))
-    std = np.abs(pBest - np.tile(pBest[np.argmin(fit_pBest)],[T_ENXAME,1]))
-    
-    return std*np.random.randn(T_ENXAME,DIM) + mean
 
-def atualizaVel(x,v,pbest, gbest, w, c1,c2, k):
-    
-    T_ENXAME = len(x)
-    DIM = len(x[0])
-    r1 = np.random.rand(T_ENXAME,DIM) # entre 0 e 1
-    r2 = np.random.rand(T_ENXAME,DIM) 
-    #w = 0.9
-    return k*(w*v + c1*r1*(pbest - x) + c2*r2*(np.tile(gbest,[T_ENXAME,1])-x))
-
-
-def pso(P,ts,tf,T_ENXAME = 50,    
-        Imax = 20, #Numero maximo de iteraçoes para calculo do coef inercial (w)
-        Wmax = 0.8,#coef inercial max
-        Wmin = 0.4 #coef inercial min   
-   ):
-    
-    
-    DIM = 2 #dimensoes do problema    
-    
-#------ Inicia váriaveis -------------    
-    x = 5*np.random.randn(T_ENXAME,DIM)
-
-    v = np.random.randn(T_ENXAME,DIM)    
-    pBest = x #pbest recebe o valor de x por ser a única posição conhecida da partic
-    fitPbest = np.inf*np.ones(len(x)) 
-    fitIter = []
-    c1 = 2
-    c2 = 2
-    #k = 2/np.abs(2-(c1+c2)-np.sqrt((c1+c2)**2-4*(c1+c2)))
-    atualizaFitness(P,ts,tf,fitPbest,pBest,x, 0) # atualiza fitness atual e pBest 
-    gb = np.argmin(fitPbest)
-    fitIter.append(fitPbest[gb])
-    for j in range(40):
-        
-        v = atualizaVel(x,v,pBest,pBest[gb],coefInercial(Wmin,Wmax,j,50),c2,c1,1)  #wIter é um vetor com os valores de w a cada iteraçao
-        limitaVelocidade(v, 5000)
-        x = x + v
-       # limitaRegiao(x, 500)
-        atualizaFitness(P,ts,tf,fitPbest,pBest,x,0) # atualiza fitness atual e pBest 
-        gb = np.argmin(fitPbest)
-        fitIter.append(fitPbest[gb])
-          
-    return pBest[gb], fitIter
-    #return fitIter
-
-
-def bbpso(P,ts,tf,T_ENXAME = 50):
-    """
-    Bare bone PSO
-    """
-    
-    DIM = 2 #dimensoes do problema    
-#------ Inicia váriaveis -------------    
-    x = 2*np.random.randn(T_ENXAME,DIM)
-    pBest = x #pbest recebe o valor de x por ser a única posição conhecida da partic
-    fitPbest = np.inf*np.ones(len(x)) 
-    fitIter = []
-    atualizaFitness(P,ts,tf,fitPbest,pBest,x,0) # atualiza fitness atual e pBest 
-    gb = np.argmin(fitPbest)
-    fitIter.append(fitPbest[gb])
-    for j in range(30):
-        
-        x = x_bbpso(pBest, fitPbest, DIM, T_ENXAME)
-       # limitaRegiao(x, 5000)
-        atualizaFitness(P,ts,tf,fitPbest,pBest,x,0) # atualiza fitness atual e pBest 
-        gb = np.argmin(fitPbest)
-        fitIter.append(fitPbest[gb])
-
-    return pBest[gb], fitIter
-    #return fitIter
 
 def resultados(coefs, converg,P,Ts,tf):
     

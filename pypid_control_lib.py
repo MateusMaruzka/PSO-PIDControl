@@ -110,6 +110,46 @@ def step(b, a, Ts = 0.1, tf = 1):
     
     return y,t
 
+def picontrol(P, ts, tf, vetor_ganhos, num_controladores):
+    
+    Pd = P.to_discrete(ts)
+    
+    B = Pd.num                  # zeros
+    A = Pd.den                  # poles
+    nb = len(B) - 1             # number of zeros
+    na = len(A) - 1             # number of poles
+        
+    slack = np.amax([na, nb]) + 1 # slack for negative time indexing of arrays
+    kend = math.ceil(tf/ts) + 1   # end of simulation in discrete time
+    kmax = kend + slack           # total simulation array size
+    
+    y = np.zeros([kmax, num_controladores])
+    u = np.zeros([kmax, num_controladores])
+    e = np.zeros([kmax, num_controladores])
+    r = 1*np.ones([kmax, num_controladores])
+    
+    kp = vetor_ganhos[:,0]
+    ki = vetor_ganhos[:,1]
+
+    # Simulate
+    for k in range(slack, kmax):
+        y[k] = np.dot(B, u[k-1:k-1-(nb+1):-1]) - np.dot(A[1:], y[k-1:k-1-na:-1])
+        
+        # error
+        e[k] = r[k] - y[k]
+        
+        # PI control discretized by backwards differences
+        du = kp*(e[k] - e[k-1])  + ki*e[k]*ts
+        u[k] = u[k-1] + du 
+         
+        # SATURACAO
+        # u[k] = min(max(0, u[k]), 2)
+        # gg = u[k] > 10
+        # u[k,gg] = 10
+        
+    return y.T, e.T, u.T
+
+
 # Plot time response
 """
 
