@@ -32,7 +32,7 @@ def main():
     n_p = 20
     P = ss.TransferFunction([1], [1, 4, 6, 4, 1])
     gb, fitIter = pso.pso(fObj_pid, n_p , 2, _alfa=15, _Wmin=wmin, _Wmax=wmax, _c1 = c1, _c2 = c2, P=P, ts=Ts, tf=Tf, LAMBDA=l)    
-    f_name = "dados/pid_pso_n2.pickle"
+    f_name = "dados/pid_pso_n3.pickle"
     
     with open(f_name, "wb") as f:
     

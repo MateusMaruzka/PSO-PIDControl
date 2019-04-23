@@ -24,7 +24,7 @@ def main():
                     data = pickle.load(f)
                     params = data.get('Params')
                     y,e,u = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), np.array([data.get('Gbest')]), 1)
-                    plt.plot(y.T)
+                    plt.plot(np.arange(0, params.get('Ts') + params.get('Tf'), params.get('Ts')),y.T)
                     plt.show()
                 except EOFError:
                     break

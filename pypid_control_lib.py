@@ -147,7 +147,12 @@ def picontrol(P, ts, tf, vetor_ganhos, num_controladores):
         # gg = u[k] > 10
         # u[k,gg] = 10
         
-    return y.T, e.T, u.T
+    print(slack)
+    print("resp")
+    print(y.T)
+    #print(e.T)
+    #print(u.T)
+    return y.T[...,slack:], e.T[...,slack:], u.T[...,slack:]
 
 
 # Plot time response
