@@ -128,7 +128,7 @@ def main():
    L = gBest[0]
    T = gBest[1]
    
-   Ts = 0.5
+   Ts = 0.05
    tf = 20
    t = np.arange(0, tf + Ts, Ts)
 
@@ -139,7 +139,7 @@ def main():
 
    P2 = scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1])
    P2d = P2.to_discrete(Ts)
-   #t2,y2 = scipy.signal.dstep(P2d,n = len())
+   #t2,y2 = scipy.signal.dstep(P2d,n = len(t1))
 
    y2,t2 = step(P2d.num, P2d.den, Ts, 20)
 

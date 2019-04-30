@@ -18,7 +18,7 @@ def imc(ts, tau):#
     kp = tau/(k*(l+theta))
     ti = min(tau,4*(l+theta)) 
 
-    return([kp, 1/ti])
+    return np.array([[kp, 1/ti]])
     
 def simc(ts, tau):
     theta = ts
@@ -27,7 +27,7 @@ def simc(ts, tau):
     kp = (2*t + theta)/(3*theta*k)
     ti = min(t+theta/2, 8*theta)
     
-    return np.array([kp, 1/ti])
+    return np.array([[kp, 1/ti]])
 
 def isimc(ts,tau):
     theta = ts
@@ -41,7 +41,7 @@ def isimc(ts,tau):
 def zn(ts,tau):
     Kp_zn = 0.9*tau/ts
     Ti_zn = 3*ts
-    return np.array([Kp_zn, 1/Ti_zn])
+    return np.array([[Kp_zn, 1/Ti_zn]])
 
 
 
@@ -67,12 +67,14 @@ def itae(e):
 
 def step_info(t,yout): 
     #t = iter(t1)
-    
-    print ("OS: %f%s"%((yout.max()/yout[-1]-1)*100,'%'))
-    print ("Tr %f"%(t[next(i for i in range(0,len(yout)-1) if yout[i]>yout[-1]*.90)]-t[0]))
+    os = (yout.max()/yout[-1]-1)*100
+    tr = t[next(i for i in range(0,len(yout)-1) if yout[i]>yout[-1]*.90)]-t[0]
+    #print ("OS: %f%s"%((yout.max()/yout[-1]-1)*100,'%'))
+    #print ("Tr %f"%(t[next(i for i in range(0,len(yout)-1) if yout[i]>yout[-1]*.90)]-t[0]))
     A = abs(yout - 1) < 0.02 # ts
-    print("Ts %f"%t[A][0])
-    
+    ts = t[A][0]
+   # print("Ts %f"%t[A][0])
+    return os, tr, ts
 
 def step(b, a, Ts = 0.1, tf = 1):
     
@@ -128,6 +130,7 @@ def picontrol(P, ts, tf, vetor_ganhos, num_controladores):
     e = np.zeros([kmax, num_controladores])
     r = 1*np.ones([kmax, num_controladores])
     
+
     kp = vetor_ganhos[:,0]
     ki = vetor_ganhos[:,1]
 
@@ -147,9 +150,6 @@ def picontrol(P, ts, tf, vetor_ganhos, num_controladores):
         # gg = u[k] > 10
         # u[k,gg] = 10
         
-    print(slack)
-    print("resp")
-    print(y.T)
     #print(e.T)
     #print(u.T)
     return y.T[...,slack:], e.T[...,slack:], u.T[...,slack:]

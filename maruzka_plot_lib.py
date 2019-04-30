@@ -24,15 +24,18 @@ def maruzka_plot(x,y, font_size = 12, figsize = (9,6), fontfamily = "Times New R
     # cores
     colors = ['k','r','b','m','y',]
     
-    if len(x[0]) != len(y[0]):
-        print("Algo de errado não está certo")
-    else:   
-        lines = []
-        t = iter(colors)
-        for i,j in zip(x, y):
-            line, = plt.step(i, j, '-',  color=next(t), linewidth=1.2)
-            lines.append(line)
-    #ax1.plot(x, y1, color=[0.5, 0.5, 0.5], linewidth=1.2)
+    lines = []
+    t = iter(colors)
+    ax = []
+    cols = len(x)
+    fig1 = plt.figure(num=1, figsize=figsize)
+    for i in y: # caso o eixo x seja o msm para todos
+        #line, = plt.step(x,y, '-', color=next(t), linewidth=1.2)
+        row = (i // cols)
+        col = i % cols
+        ax.append(fig1.add_subplot([row, col]))
+        ax[-1].plot(x, y, 'o', ls='-')
+
     plt.xlabel(xlabel, fontsize=12)
     plt.ylabel(ylabel, fontsize=12)
     
