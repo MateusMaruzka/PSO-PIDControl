@@ -9,17 +9,8 @@ Created on Sun Apr 14 20:03:57 2019
 import numpy as np
 import math
 
-def imc(ts, tau):#
-    
-    theta = ts
-    k=1
-    l = 2*(tau+theta)/3
-    l = theta #skogestad 03
-    kp = tau/(k*(l+theta))
-    ti = min(tau,4*(l+theta)) 
 
-    return np.array([[kp, 1/ti]])
-    
+
 def simc(ts, tau):
     theta = ts
     t = tau
@@ -27,7 +18,7 @@ def simc(ts, tau):
     kp = (2*t + theta)/(3*theta*k)
     ti = min(t+theta/2, 8*theta)
     
-    return np.array([[kp, 1/ti]])
+    return np.array([[kp, kp/ti]])
 
 def isimc(ts,tau):
     theta = ts
@@ -36,14 +27,26 @@ def isimc(ts,tau):
     tc = theta
     ti = min(t+theta/3, 4*(tc+theta))
     kc = (t+theta/3)/(k*(tc + theta))
-    return np.array([kc, kc/ti])
+    return np.array([[kc, kc/ti]])
     
 def zn(ts,tau):
     Kp_zn = 0.9*tau/ts
     Ti_zn = 3*ts
-    return np.array([[Kp_zn, 1/Ti_zn]])
+    return np.array([[Kp_zn, Kp_zn/Ti_zn]])
 
 
+def imc(L, T, k = 1):#
+    
+    theta = L
+    tau = T
+
+    l = 2*(tau+theta)/3
+    #l = theta #skogestad 03
+    kp = tau/(k*(l+theta))
+    ti = min(tau,4*(l+theta)) 
+
+    return np.array([[kp, kp/ti]])
+    
 
 def cc(ts,tau):
     theta = ts
@@ -62,8 +65,11 @@ def iae(e):
     return np.sum(np.abs(e),axis=1)
 
 def itae(e):
-    k = np.arange(len(e))
+    k = np.arange(len(e[0]))
     return np.dot(np.abs(e),k)
+
+def tvc(u):
+    return ise(u[...,1:-1] - u[...,0:-2])
 
 def step_info(t,yout): 
     #t = iter(t1)
@@ -72,7 +78,11 @@ def step_info(t,yout):
     #print ("OS: %f%s"%((yout.max()/yout[-1]-1)*100,'%'))
     #print ("Tr %f"%(t[next(i for i in range(0,len(yout)-1) if yout[i]>yout[-1]*.90)]-t[0]))
     A = abs(yout - 1) < 0.02 # ts
-    ts = t[A][0]
+
+    try:
+        ts = t[A][0]
+    except IndexError:
+        ts = 99
    # print("Ts %f"%t[A][0])
     return os, tr, ts
 
