@@ -15,7 +15,7 @@ def fObj_pid(x,P,ts,tf,LAMBDA):
 
     mY, mE, mDU = pid.picontrol(P,ts,tf,x,len(x)) # testar
     mDU = mDU[...,1:-1] - mDU[...,0:-2]
-    f = pid.ise(mE) + LAMBDA*pid.ise(mDU) # MULTIOBJETIVO (LQR)
+    f = pid.itae(mE) + LAMBDA*pid.ise(mDU) # MULTIOBJETIVO (LQR)
     
     return f
 
@@ -28,11 +28,12 @@ def main():
     c2 = 2
     Ts = 0.1
     Tf = 30
-    l = 20
+    l = 10000
     n_p = 50
     P = ss.TransferFunction([1], [1, 4, 6, 4, 1])
     gb, fitIter = pso.pso(fObj_pid, n_p , 2, _alfa=5, _Wmin=wmin, _Wmax=wmax, _c1 = c1, _c2 = c2, P=P, ts=Ts, tf=Tf, LAMBDA=l)    
-    f_name = "dados/pid_pso_n3.pickle"
+    
+    f_name = "dados/pid_pso_itae10.pickle"
     
     with open(f_name, "wb") as f:
     

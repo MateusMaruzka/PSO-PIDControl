@@ -9,7 +9,7 @@ import pickle
 import glob
 #import pprint
 import pypid_control_lib as ctrl
-import matplotlib
+
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import numpy as np
@@ -55,37 +55,57 @@ def resultados(coefs, converg,P,Ts,tf):
     plt.show()
 
 
+
+#def plot_fig_tcc(end_dados, )
+
 def main():
     
-    fopdt = [3.96718829, 1.98359314]
+    # fopdt = [3.96718829, 1.98359314]
+    # fopdt = [1.98359314, 3.96718829]
+    fopdt = [1.77033282 ,2.52943189]
+    L = 1.77033282
+    T = 2.52943189
+    f = open("dados/pid_pso_ise00.pickle", "rb")
+    data = pickle.load(f)
+    params = data.get('Params')
+    t = np.arange(0, params.get('Tf') + params.get('Ts'), params.get('Ts'))
+
+    df = [["Método","Os", "Tr", "Ts", "ISE", "TVC", "Coeficiente de supressão da ação de controle"]]
+
+    y_imc, e_imc, u_imc = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), ctrl.imc(L, T), 1)
+    y_zn, e_zn, u_zn = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), ctrl.zn(L, T), 1)
+    y_simc, e_simc, u_simc = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), ctrl.simc(L, T), 1)
+       
+    os, tr, ts = ctrl.step_info(t,y_imc[0])
+    df.append(["IMC",os,tr,ts, ctrl.ise(y_imc), ctrl.tvc(u_imc)])
+    os, tr, ts = ctrl.step_info(t,y_zn[0])
+    df.append(["Ziegler-Nichols",os,tr,ts, ctrl.ise(y_zn),ctrl.tvc(u_zn)])
+    os, tr, ts = ctrl.step_info(t,y_simc[0])
+    df.append(["SIMC",os,tr,ts, ctrl.ise(y_simc), ctrl.tvc(u_simc)])
+            
+    
     i = 0
-    for file_name in glob.glob("dados/*.pickle"):
+    for file_name in glob.glob("dados/pid_pso_ise??.pickle"):
+        print(file_name)
         with open(file_name, "rb") as f:
-            df = [["Os", "Tr", "Ts"]]
             i = i + 1
             while True:
                 try:
                     data = pickle.load(f)
                     params = data.get('Params')
-                    t = np.arange(0, params.get('Tf') + params.get('Ts'), params.get('Ts'))
+                   
                     y,e,u = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), np.array([data.get('Gbest')]), 1)
+                    
                     os, tr, ts = ctrl.step_info(t,y[0])
-                    df.append([os,tr,ts])
-
+                    df.append(["PSO-ISE",os,tr,ts, ctrl.ise(y), ctrl.tvc(u),params.get('Lambda')])
+                   
                     print("Params: ISE e lambda = %f" %(params.get('Lambda')))
                     print("Os :%f \nTr: %f\nTs: %f" %(os,tr,ts))
-                    y_imc, e_imc, u_imc = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), ctrl.imc(fopdt[1], fopdt[0]), 1)
-                    y_zn, e_zn, u_zn = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), ctrl.zn(fopdt[1], fopdt[0]), 1)
-                    y_simc, e_simc, u_simc = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), ctrl.simc(fopdt[1], fopdt[0]), 1)
-                    os, tr, ts = ctrl.step_info(t,y_zn[0])
-                    df.append([os,tr,ts])
 
-                    fig1, ax = plt.subplots(ncols=1, nrows=2, constrained_layout=True, sharex = True)
-                    
-                    
+                    fig1, ax = plt.subplots(ncols=1, nrows=2, constrained_layout=True, sharex = True, figsize = (9,6))
                     r = np.ones(len(t))
                     ax[0].plot(t,r, 'k--', linewidth = 1.2)
-                    ax[0].plot(t,y[0], label = "PSO")
+                    ax[0].plot(t,y[0], label = "PSO-ISE")
                     ax[0].plot(t,y_imc[0], label = "IMC")
                     ax[0].plot(t,y_zn[0] , label = "Ziegler-Nichols")
                     ax[0].plot(t,y_simc[0], label = "SIMC")
@@ -102,20 +122,125 @@ def main():
                     ax[1].set_ylabel('u(t)')
                     plt.xlabel('t (s)')
                     plt.xlim([0, params.get('Tf')])
-                    plt.savefig("./graficos/%i.svg" %(i))
+                    plt.savefig("./graficos/ise%i.svg" %(i))
                     plt.show()
                     
 
-                    df = pd.DataFrame(df)
-                    with open("dados/tabelas/tabelas%i.tex"%i, "w") as g:
-                        g.write(df.to_latex())
+#                    df = pd.DataFrame(df)
+#                    with open("dados/tabelas/tabelas%i.tex"%i, "w") as g:
+#                        g.write(df.to_latex())
 
                     # plt.plot(np.arange(0, params.get('Ts') + params.get('Tf'), params.get('Ts')),y.T)
                 except EOFError:
                     break
     
+    for file_name in glob.glob("dados/pid_pso_iae??.pickle"):
+        print(file_name)
+        with open(file_name, "rb") as f:
+            i = i + 1
+            while True:
+                try:
+                    data = pickle.load(f)
+                    params = data.get('Params')
+                   
+                    y,e,u = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), np.array([data.get('Gbest')]), 1)
+                    
+                    os, tr, ts = ctrl.step_info(t,y[0])
+                    df.append(["PSO-IAE",os,tr,ts, ctrl.ise(y), ctrl.tvc(u),params.get('Lambda')])
+                   
+                    print("Params: ISE e lambda = %f" %(params.get('Lambda')))
+                    print("Os :%f \nTr: %f\nTs: %f" %(os,tr,ts))
+                  
+                    fig1, ax = plt.subplots(ncols=1, nrows=2, constrained_layout=True, sharex = True, figsize = (9,6))
+                    
+                    r = np.ones(len(t))
+                    ax[0].plot(t,r, 'k--', linewidth = 1.2)
+                    ax[0].plot(t,y[0], label = "PSO-IAE")
+                    ax[0].plot(t,y_imc[0], label = "IMC")
+                    ax[0].plot(t,y_zn[0] , label = "Ziegler-Nichols")
+                    ax[0].plot(t,y_simc[0], label = "SIMC")
+                    ax[0].legend()
+
+
+                    ax[1].plot(t,u[0])
+                    ax[1].plot(t,u_imc[0])
+                    ax[1].plot(t,u_zn[0])
+                    ax[1].plot(t,u_simc[0])
+
+
+                    ax[0].set_ylabel('y(t)')
+                    ax[1].set_ylabel('u(t)')
+                    plt.xlabel('t (s)')
+                    plt.xlim([0, params.get('Tf')])
+                    plt.savefig("./graficos/iae%i.svg" %(i))
+                    plt.show()
+                    
+
+
+
+                    # plt.plot(np.arange(0, params.get('Ts') + params.get('Tf'), params.get('Ts')),y.T)
+                except EOFError:
+                    break
+                  
 
     
+    i = 0
+    for file_name in glob.glob("dados/pid_pso_itae??.pickle"):
+        print(file_name)
+        with open(file_name, "rb") as f:
+            i = i + 1
+            while True:
+                try:
+                    data = pickle.load(f)
+                    params = data.get('Params')
+                   
+                    y,e,u = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), np.array([data.get('Gbest')]), 1)
+                    
+                    os, tr, ts = ctrl.step_info(t,y[0])
+                    df.append(["PSO-ITAE",os,tr,ts, ctrl.ise(y), ctrl.tvc(u),params.get('Lambda')])
+                   
+                    print("Params: ISE e lambda = %f" %(params.get('Lambda')))
+                    print("Os :%f \nTr: %f\nTs: %f" %(os,tr,ts))
+                  
+                    fig1, ax = plt.subplots(ncols=1, nrows=2, constrained_layout=True, sharex = True, figsize = (9,6))
+                    
+                    r = np.ones(len(t))
+                    ax[0].plot(t,r, 'k--', linewidth = 1.2)
+                    ax[0].plot(t,y[0], label = "PSO-ITAE")
+                    ax[0].plot(t,y_imc[0], label = "IMC")
+                    ax[0].plot(t,y_zn[0] , label = "Ziegler-Nichols")
+                    ax[0].plot(t,y_simc[0], label = "SIMC")
+                    ax[0].legend()
+
+
+                    ax[1].plot(t,u[0])
+                    ax[1].plot(t,u_imc[0])
+                    ax[1].plot(t,u_zn[0])
+                    ax[1].plot(t,u_simc[0])
+
+
+                    ax[0].set_ylabel('y(t)')
+                    ax[1].set_ylabel('u(t)')
+                    plt.xlabel('t (s)')
+                    plt.xlim([0, params.get('Tf')])
+                    plt.savefig("./graficos/itae%i.svg" %(i))
+                    plt.show()
+                    
+
+#                    df = pd.DataFrame(df)
+#                    with open("dados/tabelas/tabelas%i.tex"%i, "w") as g:
+#                        g.write(df.to_latex())
+
+                    # p    df = pd.DataFrame(df)
+    with open("dados/tabelas/tabelas%i.tex"%i, "w") as g:
+        g.write(df.to_latex())lt.plot(np.arange(0, params.get('Ts') + params.get('Tf'), params.get('Ts')),y.T)
+                except EOFError:
+                    break
+
+
+    df = pd.DataFrame(df)
+    with open("dados/tabelas/tabelas%i.tex"%i, "w") as g:
+        g.write(df.to_latex())
 #    fig2 = plt.figure(constrained_layout=True)
 #    spec2 = gridspec.GridSpec(ncols=2, nrows=2, figure=fig2)
 #    f2_ax1 = fig2.add_subplot(spec2[0, 0])
