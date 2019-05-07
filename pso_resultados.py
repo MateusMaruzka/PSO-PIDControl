@@ -54,9 +54,59 @@ def resultados(coefs, converg,P,Ts,tf):
 
     plt.show()
 
+def plota_simc_imc_zn(fig, ax, y_imc, u_imc, y_simc, u_simc, y_zn, u_zn, t):
+    ax[0].plot(t,y_imc[0], label = "Internal Model Control")
+    ax[0].plot(t,y_simc[0], label = "Skogestad IMC")
+    ax[0].plot(t,y_zn[0], label = "Ziegler-Nichols")
+    ax[0].legend()
+    
+    ax[1]. plot(t, u_imc[0])
+    ax[1]. plot(t, u_simc[0])
+    ax[1]. plot(t, u_zn[0])
+    
+def plota_os_pickle(caminho, df, fig, ax):
+    i = 0
+    for file_name in glob.glob(caminho):
+        print(file_name)
+        with open(file_name, "rb") as f:
+            i = i + 1
+            while True:
+                try:
+                    data = pickle.load(f)
+                    params = data.get('Params')
+                   
+                    y,e,u = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), np.array([data.get('Gbest')]), 1)
+                    t = np.arange(0, params.get('Tf') + params.get('Ts'), params.get('Ts'))
+
+                    os, tr, ts = ctrl.step_info(t,y[0])
+                    df.append([data.get('Metodo'),os,tr,ts, ctrl.ise(y), ctrl.tvc(u),params.get('Lambda')])
+                   
+                    # print("Params: ISE e lambda = %f" %(params.get('Lambda')))
+                    # print("Os :%f \nTr: %f\nTs: %f" %(os,tr,ts))
+
+                    r = np.ones(len(t))
+                    ax[0].plot(t,r, 'k--', linewidth = 1.2)
+                    ax[0].plot(t,y[0], label = data.get('Metodo'))
+                    #ax[0].legend()
 
 
-#def plot_fig_tcc(end_dados, )
+                    ax[1].plot(t,u[0])
+
+                    ax[0].set_ylabel('y(t)')
+                    ax[1].set_ylabel('u(t)')
+                    plt.xlabel('t (s)')
+                    plt.xlim([0, params.get('Tf')])
+                    #plt.savefig("./graficos/ise%i.svg" %(i))
+                    #plt.show()
+                    
+
+#                    df = pd.DataFrame(df)
+#                    with open("dados/tabelas/tabelas%i.tex"%i, "w") as g:
+#                        g.write(df.to_latex())
+
+                    # plt.plot(np.arange(0, params.get('Ts') + params.get('Tf'), params.get('Ts')),y.T)
+                except EOFError:
+                    break
 
 def main():
     
@@ -65,7 +115,7 @@ def main():
     fopdt = [1.77033282 ,2.52943189]
     L = 1.77033282
     T = 2.52943189
-    f = open("dados/pid_pso_ise00.pickle", "rb")
+    f = open("dados/IAE.pickle", "rb")
     data = pickle.load(f)
     params = data.get('Params')
     t = np.arange(0, params.get('Tf') + params.get('Ts'), params.get('Ts'))
@@ -84,160 +134,28 @@ def main():
     df.append(["SIMC",os,tr,ts, ctrl.ise(y_simc), ctrl.tvc(u_simc)])
             
     
-    i = 0
-    for file_name in glob.glob("dados/pid_pso_ise??.pickle"):
-        print(file_name)
-        with open(file_name, "rb") as f:
-            i = i + 1
-            while True:
-                try:
-                    data = pickle.load(f)
-                    params = data.get('Params')
-                   
-                    y,e,u = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), np.array([data.get('Gbest')]), 1)
-                    
-                    os, tr, ts = ctrl.step_info(t,y[0])
-                    df.append(["PSO-ISE",os,tr,ts, ctrl.ise(y), ctrl.tvc(u),params.get('Lambda')])
-                   
-                    print("Params: ISE e lambda = %f" %(params.get('Lambda')))
-                    print("Os :%f \nTr: %f\nTs: %f" %(os,tr,ts))
-
-                    fig1, ax = plt.subplots(ncols=1, nrows=2, constrained_layout=True, sharex = True, figsize = (9,6))
-                    r = np.ones(len(t))
-                    ax[0].plot(t,r, 'k--', linewidth = 1.2)
-                    ax[0].plot(t,y[0], label = "PSO-ISE")
-                    ax[0].plot(t,y_imc[0], label = "IMC")
-                    ax[0].plot(t,y_zn[0] , label = "Ziegler-Nichols")
-                    ax[0].plot(t,y_simc[0], label = "SIMC")
-                    ax[0].legend()
-
-
-                    ax[1].plot(t,u[0])
-                    ax[1].plot(t,u_imc[0])
-                    ax[1].plot(t,u_zn[0])
-                    ax[1].plot(t,u_simc[0])
-
-
-                    ax[0].set_ylabel('y(t)')
-                    ax[1].set_ylabel('u(t)')
-                    plt.xlabel('t (s)')
-                    plt.xlim([0, params.get('Tf')])
-                    plt.savefig("./graficos/ise%i.svg" %(i))
-                    plt.show()
-                    
-
-#                    df = pd.DataFrame(df)
-#                    with open("dados/tabelas/tabelas%i.tex"%i, "w") as g:
-#                        g.write(df.to_latex())
-
-                    # plt.plot(np.arange(0, params.get('Ts') + params.get('Tf'), params.get('Ts')),y.T)
-                except EOFError:
-                    break
+    fig1, ax = plt.subplots(ncols=1, nrows=2, constrained_layout=True, sharex = True, figsize = (9,6))
     
-    for file_name in glob.glob("dados/pid_pso_iae??.pickle"):
-        print(file_name)
-        with open(file_name, "rb") as f:
-            i = i + 1
-            while True:
-                try:
-                    data = pickle.load(f)
-                    params = data.get('Params')
-                   
-                    y,e,u = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), np.array([data.get('Gbest')]), 1)
-                    
-                    os, tr, ts = ctrl.step_info(t,y[0])
-                    df.append(["PSO-IAE",os,tr,ts, ctrl.ise(y), ctrl.tvc(u),params.get('Lambda')])
-                   
-                    print("Params: ISE e lambda = %f" %(params.get('Lambda')))
-                    print("Os :%f \nTr: %f\nTs: %f" %(os,tr,ts))
-                  
-                    fig1, ax = plt.subplots(ncols=1, nrows=2, constrained_layout=True, sharex = True, figsize = (9,6))
-                    
-                    r = np.ones(len(t))
-                    ax[0].plot(t,r, 'k--', linewidth = 1.2)
-                    ax[0].plot(t,y[0], label = "PSO-IAE")
-                    ax[0].plot(t,y_imc[0], label = "IMC")
-                    ax[0].plot(t,y_zn[0] , label = "Ziegler-Nichols")
-                    ax[0].plot(t,y_simc[0], label = "SIMC")
-                    ax[0].legend()
+    plota_os_pickle("dados/IAE*.pickle", df, fig1, ax)
+    plota_simc_imc_zn(fig1, ax, y_imc, u_imc, y_simc, u_simc, y_zn, u_zn, t)
 
+    fig1, ax = plt.subplots(ncols=1, nrows=2, constrained_layout=True, sharex = True, figsize = (9,6))
 
-                    ax[1].plot(t,u[0])
-                    ax[1].plot(t,u_imc[0])
-                    ax[1].plot(t,u_zn[0])
-                    ax[1].plot(t,u_simc[0])
+    plota_os_pickle("dados/ITAE*.pickle", df, fig1, ax)
+    plota_simc_imc_zn(fig1, ax, y_imc, u_imc, y_simc, u_simc, y_zn, u_zn, t)
+   
+    fig1, ax = plt.subplots(ncols=1, nrows=2, constrained_layout=True, sharex = True, figsize = (9,6))
 
-
-                    ax[0].set_ylabel('y(t)')
-                    ax[1].set_ylabel('u(t)')
-                    plt.xlabel('t (s)')
-                    plt.xlim([0, params.get('Tf')])
-                    plt.savefig("./graficos/iae%i.svg" %(i))
-                    plt.show()
-                    
-
-
-
-                    # plt.plot(np.arange(0, params.get('Ts') + params.get('Tf'), params.get('Ts')),y.T)
-                except EOFError:
-                    break
-                  
-
+    plota_os_pickle("dados/ISE*.pickle", df, fig1, ax)
+    plota_simc_imc_zn(fig1, ax, y_imc, u_imc, y_simc, u_simc, y_zn, u_zn, t)
+   
+    fig1, ax = plt.subplots(ncols=1, nrows=2, constrained_layout=True, sharex = True, figsize = (9,6))
     
+    plota_os_pickle("dados/*.pickle", df, fig1, ax)
+    ax[0].legend()
+
+
     i = 0
-    for file_name in glob.glob("dados/pid_pso_itae??.pickle"):
-        print(file_name)
-        with open(file_name, "rb") as f:
-            i = i + 1
-            while True:
-                try:
-                    data = pickle.load(f)
-                    params = data.get('Params')
-                   
-                    y,e,u = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), np.array([data.get('Gbest')]), 1)
-                    
-                    os, tr, ts = ctrl.step_info(t,y[0])
-                    df.append(["PSO-ITAE",os,tr,ts, ctrl.ise(y), ctrl.tvc(u),params.get('Lambda')])
-                   
-                    print("Params: ISE e lambda = %f" %(params.get('Lambda')))
-                    print("Os :%f \nTr: %f\nTs: %f" %(os,tr,ts))
-                  
-                    fig1, ax = plt.subplots(ncols=1, nrows=2, constrained_layout=True, sharex = True, figsize = (9,6))
-                    
-                    r = np.ones(len(t))
-                    ax[0].plot(t,r, 'k--', linewidth = 1.2)
-                    ax[0].plot(t,y[0], label = "PSO-ITAE")
-                    ax[0].plot(t,y_imc[0], label = "IMC")
-                    ax[0].plot(t,y_zn[0] , label = "Ziegler-Nichols")
-                    ax[0].plot(t,y_simc[0], label = "SIMC")
-                    ax[0].legend()
-
-
-                    ax[1].plot(t,u[0])
-                    ax[1].plot(t,u_imc[0])
-                    ax[1].plot(t,u_zn[0])
-                    ax[1].plot(t,u_simc[0])
-
-
-                    ax[0].set_ylabel('y(t)')
-                    ax[1].set_ylabel('u(t)')
-                    plt.xlabel('t (s)')
-                    plt.xlim([0, params.get('Tf')])
-                    plt.savefig("./graficos/itae%i.svg" %(i))
-                    plt.show()
-                    
-
-#                    df = pd.DataFrame(df)
-#                    with open("dados/tabelas/tabelas%i.tex"%i, "w") as g:
-#                        g.write(df.to_latex())
-
-                    # p    df = pd.DataFrame(df)
-    with open("dados/tabelas/tabelas%i.tex"%i, "w") as g:
-        g.write(df.to_latex())lt.plot(np.arange(0, params.get('Ts') + params.get('Tf'), params.get('Ts')),y.T)
-                except EOFError:
-                    break
-
-
     df = pd.DataFrame(df)
     with open("dados/tabelas/tabelas%i.tex"%i, "w") as g:
         g.write(df.to_latex())

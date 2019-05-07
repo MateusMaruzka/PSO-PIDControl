@@ -28,12 +28,15 @@ def main():
     c2 = 2
     Ts = 0.1
     Tf = 30
-    l = 10000
+    l = 0
     n_p = 50
     P = ss.TransferFunction([1], [1, 4, 6, 4, 1])
+    #P = ss.TransferFunction([1], [1, 4])
+
     gb, fitIter = pso.pso(fObj_pid, n_p , 2, _alfa=5, _Wmin=wmin, _Wmax=wmax, _c1 = c1, _c2 = c2, P=P, ts=Ts, tf=Tf, LAMBDA=l)    
     
-    f_name = "dados/pid_pso_itae10.pickle"
+    metodo = "ITAE"
+    f_name = "dados/"+metodo+".pickle"
     
     with open(f_name, "wb") as f:
     
@@ -46,7 +49,8 @@ def main():
                 'Lambda' : l,
                 'Partic' : n_p}
         
-        pso_result = {'Process': P, 
+        pso_result = {'Metodo' : metodo,
+                      'Process': P, 
                       'Gbest': gb,
                       'Params' : data,
                       'fitIter' : fitIter } 
