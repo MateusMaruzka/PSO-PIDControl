@@ -43,7 +43,7 @@ def atualizaFitness(func_fitness, posAtual, fitpBest, pbest, **args):
     
 
 
-def pso(fObj,T_ENXAME, DIM, iterMax = 50, _alfa = 30, _Wmin = 0.7,_Wmax = 0.9, _c1 = 2, _c2 = 2, **args):
+def pso(fObj,T_ENXAME, DIM, iterMax = 300, _alfa = 30, _Wmin = 0.7,_Wmax = 0.9, _c1 = 2, _c2 = 2, **args):
     
     x = _alfa*np.random.rand(T_ENXAME,DIM)
     v = np.random.randn(T_ENXAME,DIM)

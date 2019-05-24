@@ -29,13 +29,19 @@ def linearW(i,Imax, Wmax = 0.9, Wmin = 0.2):
 def compara_sinais(x,y1,t1, Ts):
     fit = np.zeros(len(x))
     for i in range(len(x)):
-        L = x[i][0]
+        L = int(x[i][0])
+        x[i][0] = L
         T = x[i][1]
         # G = scipy.signal.TransferFunction(np.polymul([1], [-L/2,1]), np.polymul([T,1], [L/2, 1]))
-        G = scipy.signal.TransferFunction(np.polymul([1], [1, -6*L, 12]), np.polymul([T,1], [1, 6*L, 12]))
-        # Gd = G.to_discrete(Ts)
+        if T < 0.01:
+            x[i][1] = 0.01
+            T = 0.01
+            
+        G = scipy.signal.TransferFunction([1], [T, 1])
+        Gd = G.to_discrete(Ts)
         # y2,t = step(Gd.num, Gd.den, Ts, 20)
-        t,y2 = scipy.signal.step(G,T =t1)
+        y2,t = step(Gd.num, Gd.den, tf = 10, t_atraso=L)
+        # t,y2 = scipy.signal.step(G,T =t1)
         fit[i] = np.sum((y2-y1)**2)
         #t = np.arange(len(y1))
         #fit[i] = np.sum(np.dot(np.abs(y2-y1), t))
@@ -47,8 +53,8 @@ def atualizaFitness(posAtual,fitpBest,pbest):
 
     P = scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1])
     Pd = P.to_discrete(Ts)
-    # y1,t1 = step(Pd.num, Pd.den, Ts, 20)
-    t1,y1 = scipy.signal.step(P)
+    y1,t1 = step(Pd.num, Pd.den, Ts, tf = 10)
+    #t1,y1 = scipy.signal.dstep(Pd)
     f = compara_sinais(posAtual,y1,t1, Ts)
     A = f < fitpBest # vetor de decisao
     fitpBest[A] = f[A]
@@ -109,7 +115,7 @@ def maruzka_plot(x,y, font_size = 12, figsize = (9,6), fontfamily = "Times New R
         lines = []
         t = iter(colors)
         for i,j in zip(x, y):
-            line, = plt.plot(i, j, '-',  color=next(t), linewidth=1.2)
+            line, = plt.step(i, j, '-',  color=next(t), linewidth=1.2)
             lines.append(line)
     #ax1.plot(x, y1, color=[0.5, 0.5, 0.5], linewidth=1.2)
     plt.xlabel(xlabel, fontsize=12)
@@ -134,25 +140,25 @@ def main():
    Ts = 0.1
    tf = 20
    # t = np.arange(0, tf + Ts, Ts)
-   P1 = scipy.signal.TransferFunction(np.polymul([1], [1, -6*L, 12]), np.polymul([T,1], [1, 6*L, 12]))
+   P1 = scipy.signal.TransferFunction(np.polymul([1], [1]), np.polymul([T,1], [1]))
 
    # P1 = scipy.signal.TransferFunction(np.polymul([1], [-L/2,1]), np.polymul([T,1], [L/2, 1]))
    P1d = P1.to_discrete(Ts)
-   t1,y1, = scipy.signal.dstep(P1d, n = 150)
-   # y1,t1 = step(P1d.num, P1d.den, Ts, 20)
+   #t1,y1, = scipy.signal.dstep(P1d, n = 150)
+   y1,t1 = step(P1d.num, P1d.den, Ts, 20, int(L))
 
    P2 = scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1])
    P2d = P2.to_discrete(Ts)
-   t2,y2, = scipy.signal.dstep(P2d, n = 150)
-   # y2,t2 = step(P2d.num, P2d.den, Ts, 20)
+   #t2,y2, = scipy.signal.dstep(P2d, n = 150)
+   y2,t2 = step(P2d.num, P2d.den, Ts, 20)
 
 
-   #plt.plot(y2[0])
-   #plt.plot(y1[0])
+   #plt.plot(y2)
+   #plt.plot(y1)
 #   step_info(t1,y1)
 #   step_info(t2,y2)
 #   
-   maruzka_plot((t1,t2),(y1[0],y2[0]), xlabel = "t (s)", ylabel = "Saída",legends=["FOPDT","4º Ordem"], title="fopdt_approx")
+   maruzka_plot((t1,t2),(y1,y2), xlabel = "t (s)", ylabel = "y(t)",legends=["FOPDT","4º Ordem"], title="fopdt_approx")
 
 
 if __name__ == "__main__":

@@ -15,27 +15,30 @@ def fObj_pid(x,P,ts,tf,LAMBDA):
 
     mY, mE, mDU = pid.picontrol(P,ts,tf,x,len(x)) # testar
     mDU = mDU[...,1:-1] - mDU[...,0:-2]
-    f = pid.itae(mE) + LAMBDA*pid.ise(mDU) # MULTIOBJETIVO (LQR)
+    f = pid.ise(mE) + LAMBDA*pid.ise(mDU) # MULTIOBJETIVO (LQR)
     
     return f
 
+
+def esfera(x):
+    return np.sum((x)**2, axis=1)
 
 def main():
     
     wmin = 0.1
     wmax = 0.9
     c1 = 2
-    c2 = 2
+    c2 = 4
     Ts = 0.1
     Tf = 30
     l = 0
     n_p = 50
     P = ss.TransferFunction([1], [1, 4, 6, 4, 1])
-    #P = ss.TransferFunction([1], [1, 4])
+    #P = ss.TransferFunction([1], [12, 4])
 
-    gb, fitIter = pso.pso(fObj_pid, n_p , 2, _alfa=5, _Wmin=wmin, _Wmax=wmax, _c1 = c1, _c2 = c2, P=P, ts=Ts, tf=Tf, LAMBDA=l)    
-    
-    metodo = "ITAE"
+    gb, fitIter = pso.pso(fObj_pid, n_p , 2, _alfa=10, _Wmin=wmin, _Wmax=wmax, _c1 = c1, _c2 = c2, P=P, ts=Ts, tf=Tf, LAMBDA=l)    
+    #gb, fitIter = pso.pso(esfera, n_p, 3)
+    metodo = "ISE"
     f_name = "dados/"+metodo+".pickle"
     
     with open(f_name, "wb") as f:

@@ -9,7 +9,8 @@ Created on Sun Apr 14 20:03:57 2019
 import numpy as np
 import math
 
-
+import scipy.signal
+import matplotlib.pyplot as plt
 
 def simc(ts, tau):
     theta = ts
@@ -86,7 +87,7 @@ def step_info(t,yout):
    # print("Ts %f"%t[A][0])
     return os, tr, ts
 
-def step(b, a, Ts = 0.1, tf = 1):
+def step(b, a, Ts = 0.1, tf = 1, t_atraso = 0):
     
     # Pd = P.to_discrete(Ts)  
     # B = Pd.num                  # zeros
@@ -105,16 +106,12 @@ def step(b, a, Ts = 0.1, tf = 1):
     
     y = np.zeros(kmax)
     u = np.ones(kmax)
-    # u[0:slack] = 0
     
     # Simulate
-    for k in range(slack, kmax-1):
-        #print(len(A[1:]))
-        #print(len(y[k-1:k-1-na:-1]))
-        y[k] = np.dot(B, np.ones(len(b))) - np.dot(A[1:], y[k-1:k-1-na:-1])
+    for k in range(slack+t_atraso, kmax):
+           
+        y[k] = np.dot(B, u[k-1-t_atraso:k-1-t_atraso-(nb+1):-1]) - np.dot(A[1:], y[k-1:k-1-na:-(1)])
 
-        #y[k] = np.dot(B, u[k-1:k-1-(nb+1):-1]) - np.dot(A[1:], y[k-1:k-1-na:-1])
-        
     # ignore empty slack
     y = y[slack:]
     u = u[slack:]
@@ -141,6 +138,7 @@ def picontrol(P, ts, tf, vetor_ganhos, num_controladores):
     r = 1*np.ones([kmax, num_controladores])
     
 
+ 
     kp = vetor_ganhos[:,0]
     ki = vetor_ganhos[:,1]
 
@@ -164,6 +162,24 @@ def picontrol(P, ts, tf, vetor_ganhos, num_controladores):
     #print(u.T)
     return y.T[...,slack:], e.T[...,slack:], u.T[...,slack:]
 
+
+
+def main():
+    Ts = 0.1
+    P1 = scipy.signal.TransferFunction([1],[0.001, 1])
+    P1d = P1.to_discrete(Ts)
+    P = scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1])
+    P1d = P.to_discrete(Ts)
+    y,t = step(P1d.num, P1d.den, Ts, tf=15, t_atraso=10)
+ 
+    
+    print(step_info(t,y))
+    plt.plot(t,y)
+    
+
+
+if __name__ == "__main__":
+    main()
 
 # Plot time response
 """
