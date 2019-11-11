@@ -13,7 +13,8 @@ import pickle
 
 def fObj_pid(x,P,ts,tf,LAMBDA):
 
-    mY, mE, mDU = pid.picontrol(P,ts,tf,x,len(x)) # testar
+    #print(P)
+    mY, mE, mDU,r,t = pid.picontrol(P[0],ts,tf,x,len(x)) # testar
     mDU = mDU[...,1:-1] - mDU[...,0:-2]
     f = pid.ise(mE) + LAMBDA*pid.ise(mDU) # MULTIOBJETIVO (LQR)
     
@@ -28,15 +29,16 @@ def main():
     wmin = 0.1
     wmax = 0.9
     c1 = 2
-    c2 = 4
-    Ts = 0.1
-    Tf = 30
+    c2 = 2
+    Ts = 0.01
+    Tf = 10
     l = 0
-    n_p = 50
-    P = ss.TransferFunction([1], [1, 4, 6, 4, 1])
-    #P = ss.TransferFunction([1], [12, 4])
+    n_p = 20
+    P = ss.TransferFunction([0.5], [1, 1.7])
+    atraso = 0;
+    # P = ss.TransferFunction([1], [2.19216486, 1])
 
-    gb, fitIter = pso.pso(fObj_pid, n_p , 2, _alfa=10, _Wmin=wmin, _Wmax=wmax, _c1 = c1, _c2 = c2, P=P, ts=Ts, tf=Tf, LAMBDA=l)    
+    gb, fitIter = pso.pso(fObj_pid, n_p , 2, _alfa=10, _Wmin=wmin, _Wmax=wmax, _c1 = c1, _c2 = c2, P=[P, atraso], ts=Ts, tf=Tf, LAMBDA=l)    
     #gb, fitIter = pso.pso(esfera, n_p, 3)
     metodo = "ISE"
     f_name = "dados/"+metodo+".pickle"
@@ -53,7 +55,7 @@ def main():
                 'Partic' : n_p}
         
         pso_result = {'Metodo' : metodo,
-                      'Process': P, 
+                      'Process': [P, atraso], 
                       'Gbest': gb,
                       'Params' : data,
                       'fitIter' : fitIter } 

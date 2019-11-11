@@ -74,15 +74,16 @@ def plota_os_pickle(caminho, df, fig, ax):
                 try:
                     data = pickle.load(f)
                     params = data.get('Params')
-                   
-                    y,e,u = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), np.array([data.get('Gbest')]), 1)
+                    P = data.get('Process')
+                    y,e,u,r,t = ctrl.picontrol(P[0], params.get('Ts'), params.get('Tf'), np.array([data.get('Gbest')]), 1)
                     t = np.arange(0, params.get('Tf') + params.get('Ts'), params.get('Ts'))
 
                     os, tr, ts = ctrl.step_info(t,y[0])
                     df.append([data.get('Metodo'),os,tr,ts, ctrl.ise(y), ctrl.tvc(u),params.get('Lambda')])
                    
-                    # print("Params: ISE e lambda = %f" %(params.get('Lambda')))
-                    # print("Os :%f \nTr: %f\nTs: %f" %(os,tr,ts))
+                    print("Params: ISE e lambda = %f" %(params.get('Lambda')))
+                    print("Params: %f", data.get('Gbest'))
+                    print("Os :%f \nTr: %f\nTs: %f" %(os,tr,ts))
 
                     r = np.ones(len(t))
                     ax[0].plot(t,r, 'k--', linewidth = 1.2)
@@ -118,7 +119,7 @@ def main():
     
     T = 2.33357111
     
-    with open("dados/IAE.pickle", "rb") as f:
+    with open("dados/ISE.pickle", "rb") as f:
         data = pickle.load(f)
         
     params = data.get('Params')
@@ -126,37 +127,37 @@ def main():
 
     df = [["Método","Os", "Tr", "Ts", "ISE", "TVC", "Coeficiente de supressão da ação de controle"]]
 
-    y_imc, e_imc, u_imc = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), ctrl.imc(L, T), 1)
-    y_zn, e_zn, u_zn = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), ctrl.zn(L, T), 1)
-    y_simc, e_simc, u_simc = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), ctrl.simc(L, T), 1)
-       
-    os, tr, ts = ctrl.step_info(t,y_imc[0])
-    df.append(["IMC",os,tr,ts, ctrl.ise(y_imc), ctrl.tvc(u_imc)])
-    os, tr, ts = ctrl.step_info(t,y_zn[0])
-    df.append(["Ziegler-Nichols",os,tr,ts, ctrl.ise(y_zn),ctrl.tvc(u_zn)])
-    os, tr, ts = ctrl.step_info(t,y_simc[0])
-    df.append(["SIMC",os,tr,ts, ctrl.ise(y_simc), ctrl.tvc(u_simc)])
-            
+    #y_imc, e_imc, u_imc,r,t = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), ctrl.imc(L, T), 1)
+    #y_zn, e_zn, u_zn,r,t = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), ctrl.zn(L, T), 1)
+    #y_simc, e_simc, u_simc,r,t = ctrl.picontrol(data.get('Process'), params.get('Ts'), params.get('Tf'), ctrl.simc(L, T), 1)
+#       
+#    os, tr, ts = ctrl.step_info(t,y_imc[0])
+#    df.append(["IMC",os,tr,ts, ctrl.ise(y_imc), ctrl.tvc(u_imc)])
+#    os, tr, ts = ctrl.step_info(t,y_zn[0])
+#    df.append(["Ziegler-Nichols",os,tr,ts, ctrl.ise(y_zn),ctrl.tvc(u_zn)])
+#    os, tr, ts = ctrl.step_info(t,y_simc[0])
+#    df.append(["SIMC",os,tr,ts, ctrl.ise(y_simc), ctrl.tvc(u_simc)])
+#            
     
-    fig1, ax = plt.subplots(ncols=1, nrows=2, constrained_layout=True, sharex = True, figsize = (9,6))
-    
-    plota_os_pickle("dados/IAE*.pickle", df, fig1, ax)
-    plota_simc_imc_zn(fig1, ax, y_imc, u_imc, y_simc, u_simc, y_zn, u_zn, t)
-    plt.savefig("./graficos/IAE.pdf")
-
-    fig1, ax = plt.subplots(ncols=1, nrows=2, constrained_layout=True, sharex = True, figsize = (9,6))
-
-    plota_os_pickle("dados/ITAE*.pickle", df, fig1, ax)
-    plota_simc_imc_zn(fig1, ax, y_imc, u_imc, y_simc, u_simc, y_zn, u_zn, t)
-    plt.savefig("./graficos/ITAE.pdf")
+#    fig1, ax = plt.subplots(ncols=1, nrows=2, constrained_layout=True, sharex = True, figsize = (9,6))
+#    
+#    plota_os_pickle("dados/IAE*.pickle", df, fig1, ax)
+#    plota_simc_imc_zn(fig1, ax, y_imc, u_imc, y_simc, u_simc, y_zn, u_zn, t)
+#    plt.savefig("./graficos/IAE.pdf")
+#
+#    fig1, ax = plt.subplots(ncols=1, nrows=2, constrained_layout=True, sharex = True, figsize = (9,6))
+#
+#    plota_os_pickle("dados/ITAE*.pickle", df, fig1, ax)
+#    plota_simc_imc_zn(fig1, ax, y_imc, u_imc, y_simc, u_simc, y_zn, u_zn, t)
+#    plt.savefig("./graficos/ITAE.pdf")
 
     fig1, ax = plt.subplots(ncols=1, nrows=2, constrained_layout=True, sharex = True, figsize = (9,6))
 
     plota_os_pickle("dados/ISE*.pickle", df, fig1, ax)
-    plota_simc_imc_zn(fig1, ax, y_imc, u_imc, y_simc, u_simc, y_zn, u_zn, t)
-    plt.savefig("./graficos/ISE.pdf")
+#    plota_simc_imc_zn(fig1, ax, y_imc, u_imc, y_simc, u_simc, y_zn, u_zn, t)
+#    plt.savefig("./graficos/ISE.pdf")
 
-    fig1, ax = plt.subplots(ncols=1, nrows=2, constrained_layout=True, sharex = True, figsize = (9,6))
+#    fig1, ax = plt.subplots(ncols=1, nrows=2, constrained_layout=True, sharex = True, figsize = (9,6))
     
     #plota_os_pickle("dados/*.pickle", df, fig1, ax)
     #ax[0].legend()

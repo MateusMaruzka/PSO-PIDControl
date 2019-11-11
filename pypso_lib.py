@@ -15,8 +15,8 @@ def coefInercial(Wmin, Wmax, i, imax):
 
 
 def limitaRegiao(x, x_lim):
-    A = x > x_lim
-    x[A] = x_lim
+   # A = x > x_lim
+   # x[A] = x_lim
     A = x < 0
     x[A] = 0
 
@@ -43,7 +43,7 @@ def atualizaFitness(func_fitness, posAtual, fitpBest, pbest, **args):
     
 
 
-def pso(fObj,T_ENXAME, DIM, iterMax = 300, _alfa = 30, _Wmin = 0.7,_Wmax = 0.9, _c1 = 2, _c2 = 2, **args):
+def pso(fObj,T_ENXAME, DIM, iterMax = 100, _alfa = 30, _Wmin = 0.1,_Wmax = 0.9, _c1 = 2, _c2 = 2, **args):
     
     x = _alfa*np.random.rand(T_ENXAME,DIM)
     v = np.random.randn(T_ENXAME,DIM)
@@ -90,7 +90,7 @@ def bbpso(P,ts,tf,T_ENXAME = 50):
     atualizaFitness(P,ts,tf,fitPbest,pBest,x,0) # atualiza fitness atual e pBest 
     gb = np.argmin(fitPbest)
     fitIter.append(fitPbest[gb])
-    for j in range(30):
+    for j in range(50):
         
         x = x_bbpso(pBest, fitPbest, DIM, T_ENXAME)
        # limitaRegiao(x, 5000)

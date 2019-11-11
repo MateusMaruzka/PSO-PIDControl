@@ -15,7 +15,7 @@ from pypid_control_lib import ise
 
 
 def esfera(x):
-    return np.sum((x-1)**2, axis=1)
+    return np.sum((x)**2, axis=1)
 
 def picontrol(P, ts, tf, vetor_ganhos, num_controladores):
     
@@ -96,11 +96,12 @@ def pso_of_psos(x):
 def main():
 
 
-    gb, fit = ppl.pso(pso_of_psos, 100, 4)
+    gb, fit = ppl.pso(esfera, 30,3, _Wmin = 0.1)
     #f,e,u,y = func_fitness(np.array([[2.4,2.4],[5.8,5.8]]), P, Ts,Tf, 0)
+
     print(gb)
     print(fit.pop())
-    plt.plot(fit)
+    plt.semilogx(fit)
     
     
 if __name__ == "__main__":
