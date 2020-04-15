@@ -11,7 +11,6 @@ import math
 
 import scipy.signal
 import matplotlib.pyplot as plt
-import control
 
 def simc(ts, tau):
     theta = ts
@@ -81,12 +80,14 @@ def step_info(t,yout):
     #print ("Tr %f"%(t[next(i for i in range(0,len(yout)-1) if yout[i]>yout[-1]*.90)]-t[0]))
     A = abs(yout - 1) < 0.02 # ts
 
+    tp = np.argmax(yout)
+    # tp = tp*t[tp]
     try:
         ts = t[A][0]
     except IndexError:
         ts = 99
    # print("Ts %f"%t[A][0])
-    return os, tr, ts
+    return os, tr, ts, tp
 
 def step(P, ts, tf, atraso = 0):
     
@@ -133,11 +134,11 @@ def picontrol(P, ts, tf, vetor_ganhos, num_controladores, atraso = 0):
     t = np.arange(0, tf + ts, ts)
 
     
-    y = np.zeros([kmax, num_controladores])
+    y =  np.zeros([kmax, num_controladores])
     yD = np.zeros([kmax, num_controladores])
-    u = np.zeros([kmax, num_controladores])
-    e = np.zeros([kmax, num_controladores])
-    r = 1*np.ones([kmax, num_controladores])
+    u =  np.zeros([kmax, num_controladores])
+    e =  np.zeros([kmax, num_controladores])
+    r =  np.ones([kmax, num_controladores])
 
     yD[kmax//2:] = 0
  
