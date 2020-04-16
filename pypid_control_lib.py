@@ -88,8 +88,8 @@ def ise2(e):
 
 def ise(e):
     
-    return ise2(e)
-    # return np.sum(e**2,axis=1)
+    # return ise2(e)
+    return np.sum(e**2,axis=1)
 
 def iae(e):
     return np.sum(np.abs(e),axis=1)
@@ -178,7 +178,7 @@ def picontrol(P, ts, tf, vetor_ganhos, num_controladores, atraso = 0):
     for k in range(slack, kmax):
         y[k] = np.dot(B, u[k-1-atraso:k-1-atraso-(nb+1):-1]) - np.dot(A[1:], y[k-1:k-1-na:-1])
         
-       # y[k] = y[k] + yD[k]
+        y[k] = y[k] + yD[k]
        
         # error
         e[k] = r[k] - y[k]
@@ -186,20 +186,14 @@ def picontrol(P, ts, tf, vetor_ganhos, num_controladores, atraso = 0):
         # PI control discretized by backwards differences
         du = kp*(e[k-1] - e[k-1])  + ki*e[k]*ts
         u[k] = u[k-1] + du 
-         
-        # SATURACAO
-        # u[k] = min(max(0, u[k]), 2)
-        # gg = u[k] > 10
-        # u[k,gg] = 10
+      
         
-    # print(e.T)
-    # print(u.T)
-    # print(y[1000:])
-    # print(y.T[...,slack:])
+  
     y = y[slack:]
     e = e[slack:]
     u = u[slack:]
     r = r[slack:]
+        
     return y.T, e.T, u.T, r.T, t
 
 
@@ -209,83 +203,21 @@ def main():
     
     Ts = 0.1
     
-    P = scipy.signal.TransferFunction([1], [20, 1])
-    #P = scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1])
+    # P = scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1])
+    P = scipy.signal.TransferFunction([1], [2.3335711, 1])
 
     
-    y,e,u,r,t = picontrol(P, Ts, 200, vetor_ganhos=np.array([[1, 1]]), num_controladores=1, atraso=0)
-   # y,t = step(P, Ts, 100)
+    y,e,u,r,t = picontrol(P, Ts, 200, vetor_ganhos=np.array([[15.02626755, 19.57202986]]), num_controladores=1, atraso=18)
     
-    
-   
-    plt.plot(t,y[0] ,'k.')
-    
-    
-   # u = np.ones(len(t))
-  #  t,y = scipy.signal.dlsim(P.to_discrete(Ts), u ,t=t)
-  #  plt.plot(t,np.squeeze(y) ,'b.')
+
+    print(np.sum(e**2, axis=1))
+    plt.plot(t,e[0] ,'k.')
+    # plt.plot(t,y[1] ,'k.')
 
     
-    P = control.TransferFunction([1], [20, 1])
-    P = P.sample(Ts)
-    
-    kp = control.TransferFunction([10],[1])
-    ki = control.TransferFunction([10],[1,0])
-    
-    Pid = control.parallel(kp,ki)
-    
-    Pid = Pid.sample(Ts, method="backward_diff")
-    
-    Pma = control.series(P,Pid)
-    Pmf = control.feedback(Pma)
-    
-    print(Pmf)
-    """
-     9 s + 1
------------------
-20 s^2 + 10 s + 1
- 
-     9.01 z - 9
---------------------
-20 z^2 - 9.99 z - 10
-
-0.005486 z - 0.004988
----------------------
- z^2 - 1.99 z + 0.99
-
-    """
-    
-    P = scipy.signal.dlti([0.005486,-0.004988], [1, -1.99, 1])
-    t,y=P.step()
-    #t,y = scipy.signal.dstep(P)
-    plt.plot(t,y[0] ,'g.')
 
 
 if __name__ == "__main__":
     main()
 
-# Plot time response
-"""
-
-h(z) = y(z)/u(z) = pol(a)/pol(b)
-
-y(z)*pol(b) = pol(a)*u(z)
-
-a(n)*z^(n) + a(n-1)*z^(n-1) +a(n-2)*z^(n-2) ...
-
-b(n)*z^(n) + b(n-1)*z^(n-1) +b(n-2)*z^(n-2) ...
-
-pol(a)*u(z) = [z^(m) + a(1)*z^(m-1) +a(2)*z^(m-2)  + An ...]*[U(z)]
-
-pol(b)*y(z) = [z^(n) + b(1)*z^(n-1) +b(2)*z^(n-2) + ... +Bn ]*[Y(z)]
-
-
-[z^(n) + b(1)*z^(n-1) +b(2)*z^(n-2) + ... +Bn ]*[Y(z)] = [z^(m) + a(1)*z^(m-1) +a(2)*z^(m-2)  + An ...]*[U(z)]
-
-y[n] + b1*y[n-1] +b2*y[n-2] + ... + bn = u[n] + a1*y[m-1] + a2*z[m-2] + ... + an
-
-
-
-
-"""
 

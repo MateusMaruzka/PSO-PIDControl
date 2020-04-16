@@ -22,8 +22,8 @@ def main():
     
     
     
-    P = signal.TransferFunction([1],[1, 4, 6, 4, 1])
-    P = signal.TransferFunction([1], [2.335, 1])
+    # P = signal.TransferFunction([1],[1, 4, 6, 4, 1])
+    P = signal.TransferFunction([1], [2.3335711, 1])
     
     for file_name in glob.glob("dados/*.pickle"):
         
