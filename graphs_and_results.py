@@ -22,7 +22,7 @@ def main():
     
     
     
-    P = signal.TransferFunction([1],[1, 2, 4, 2, 1])
+    P = signal.TransferFunction([1],[1, 4, 6, 4, 1])
     P = signal.TransferFunction([1], [2.335, 1])
     
     for file_name in glob.glob("dados/*.pickle"):
@@ -38,17 +38,17 @@ def main():
             
             print(data.get('Gbest'))
             gb= data.get('Gbest')
-            y,e,u,r,t = pypid.picontrol(P, params.get('Ts'), params.get('Tf'), np.array([data.get('Gbest')]), 1, atraso = 0)
+            y,e,u,r,t = pypid.picontrol(P, params.get('Ts'), params.get('Tf'), np.array([gb]), 1, atraso = 18)
+            print(np.sum(e[0]**2))
+            # a,b,c,tp = pypid.step_info(t, y[0])
             
-            a,b,c,tp = pypid.step_info(t, y[0])
-            
-            ax[0].annotate(r'$K_p=' + str(round(gb[0],2)) + '$' + '\n'
-                           r'$K_i=' + str(round(gb[1],2)) + '$', fontsize = 8,
-                           xy=(t[tp],y[0][tp]), 
-                                       xytext=(t[tp+10], 2), 
-                                       # arrowprops=dict(facecolor='black', shrink=0.01, width = 0.5, headwidth = 5),
-                                       arrowprops = dict(arrowstyle = '->', 
-                                       connectionstyle="angle3"))
+            # ax[0].annotate(r'$K_p=' + str(round(gb[0],2)) + '$' + '\n'
+            #                r'$K_i=' + str(round(gb[1],2)) + '$', fontsize = 8,
+            #                xy=(t[tp],y[0][tp]), 
+            #                            xytext=(t[tp+10], 2), 
+            #                            # arrowprops=dict(facecolor='black', shrink=0.01, width = 0.5, headwidth = 5),
+            #                            arrowprops = dict(arrowstyle = '->', 
+            #                            connectionstyle="angle3"))
                            
             
             ax[0].step(t,y[0], '--', label = "ISE "+ r'($\lambda$' + ')', linewidth = 1.2)

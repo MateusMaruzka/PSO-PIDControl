@@ -52,7 +52,7 @@ def atualizaFitness(func_fitness, posAtual, fitpBest, pbest, **args):
     
 
 
-def pso(fObj,T_ENXAME, DIM, iterMax = 100, var = 30, _Wmin = 0.1,_Wmax = 0.9, _c1 = 2.05, _c2 = 2.05, bondaries = None, **kwargs):
+def pso(fObj,T_ENXAME, DIM, iterMax = 100, var = 5, _Wmin = 0.1,_Wmax = 0.9, _c1 = 2.05, _c2 = 2.05, bondaries = None, **kwargs):
     
     
     constrictor_factor = lambda a,b : 2 / (np.abs(2-(a+b) - np.sqrt((a+b)**2 -4*(a+b))))
@@ -82,8 +82,7 @@ def pso(fObj,T_ENXAME, DIM, iterMax = 100, var = 30, _Wmin = 0.1,_Wmax = 0.9, _c
     
     x = var*np.random.rand(T_ENXAME,DIM)
     v = np.random.randn(T_ENXAME,DIM)
-    
-    pBest = x
+    pBest = np.copy(x)
     
     fitPbest = np.inf*np.ones(len(x)) 
     atualizaFitness(fObj, x,fitPbest,pBest, **kwargs)
@@ -95,7 +94,7 @@ def pso(fObj,T_ENXAME, DIM, iterMax = 100, var = 30, _Wmin = 0.1,_Wmax = 0.9, _c
 
         v = atualizaVel(x,v,pBest,pBest[gb], T_ENXAME,coefInercial(_Wmin,_Wmax,i,iterMax),_c2,_c1)  #wIter é um vetor com os valores de w a cada iteraçao
         x = x + cf*v
-        # limitaRegiao(x, x_sup = 100, x_inf = 0.1)
+        limitaRegiao(x, x_sup = 100, x_inf = 0.01)
         
         atualizaFitness(fObj, x,fitPbest,pBest, **kwargs) # atualiza fitness atual e pBest 
         gb = np.argmin(fitPbest) # gb = indice da particula com a melhor posiçao

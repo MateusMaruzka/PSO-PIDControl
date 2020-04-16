@@ -17,7 +17,7 @@ def fObj_pid(x,P,ts,tf,LAMBDA):
     #print(P)
     mY, mE, mDU,r,t = pid.picontrol(P[0],ts,tf,x,len(x)) # testar
     mDU = mDU[...,1:-1] - mDU[...,0:-2]
-    f = pid.ise(mE) + LAMBDA*pid.ise(mDU) # MULTIOBJETIVO (LQR)
+    f = (1-LAMBDA)*pid.ise(mE) + LAMBDA*pid.ise(mDU) # MULTIOBJETIVO (LQR)
     
     return f
 
@@ -28,18 +28,20 @@ def main():
     
     wmin = 0.1
     wmax = 0.9
-    c1 = 2.05
-    c2 = 2.05
+    c1 = 3.05
+    c2 = 3.05
     Ts = 0.1
-    Tf = 90
-    l = 0
-    n_p = 100
+    Tf = 200
+    l = 0.1
+    n_p = 1000
     
     
-    atraso = 17;
-    P = ss.TransferFunction([1], [2.335, 1])
-    
-    gb, fitIter = pso.pso(fObj_pid, n_p , 2, var=30, _Wmin=wmin, _Wmax=wmax,
+    atraso = 18;
+    P = ss.TransferFunction([1], [2.3335711, 1])
+    # [18.         2.3335711]
+    # P = ss.TransferFunction([1],[1, 4, 6, 4, 1])
+
+    gb, fitIter = pso.pso(fObj_pid, n_p , 2, var=20, _Wmin=wmin, _Wmax=wmax,
                           _c1 = c1, _c2 = c2, P=[P, atraso], ts=Ts, tf=Tf,
                           LAMBDA=l)    
 

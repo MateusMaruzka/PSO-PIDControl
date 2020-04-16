@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 
 from pypid_control_lib import ise
 
+np.seterr(all='warn')
+
 
 def esfera(x):
     return np.sum((x)**2, axis=1)
@@ -101,7 +103,7 @@ def main():
 
     print(gb)
     print(fit.pop())
-    plt.semilogx(fit)
+    plt.plot(fit)
     
     
 if __name__ == "__main__":

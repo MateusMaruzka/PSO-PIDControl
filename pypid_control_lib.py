@@ -8,6 +8,7 @@ Created on Sun Apr 14 20:03:57 2019
 """
 import numpy as np
 import math
+import sys
 
 import scipy.signal
 import matplotlib.pyplot as plt
@@ -59,8 +60,36 @@ def cc(ts,tau):
     return np.array([kp, 1/ti])
 
 
+
+def ise3(x):
+    
+    # Ainda pode ocorrer overflow
+    B = np.any(x>np.sqrt(sys.float_info.max-1), axis = 1, keepdims = 1) 
+    # print(B)
+    e = np.sum(x**2, axis = 1, where = ~B)
+    # print(e)
+    e[np.ravel(B)] = np.inf
+    
+    return e
+
+def ise2(e):
+    
+    ise = np.zeros(len(e))
+    
+    for idx, i in enumerate(e):
+        
+        try:
+            ise[idx] = np.sum(i**2)
+        except FloatingPointError:
+            print("Overflow")
+            ise[idx] = np.inf
+            
+    return ise
+
 def ise(e):
-    return np.sum(e**2,axis=1)
+    
+    return ise2(e)
+    # return np.sum(e**2,axis=1)
 
 def iae(e):
     return np.sum(np.abs(e),axis=1)

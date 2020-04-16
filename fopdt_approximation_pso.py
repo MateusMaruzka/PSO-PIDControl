@@ -62,7 +62,7 @@ def atualizaFitness(posAtual,fitpBest,pbest):
     
     
     
-def atualizaVel(x,v,pbest, gbest, num_particulas, func_coef_inercial, c1 = 2, c2 = 2):
+def atualizaVel(x,v,pbest, gbest, num_particulas, func_coef_inercial, c1 = 2.05, c2 = 2.05):
     atualizaVel.iteracoes = atualizaVel.iteracoes + 1
 
     r1 = np.random.rand() # entre 0 e 1
@@ -70,7 +70,7 @@ def atualizaVel(x,v,pbest, gbest, num_particulas, func_coef_inercial, c1 = 2, c2
    
     w = func_coef_inercial(atualizaVel.iteracoes,100)
     
-    return w*v + c1*r1*(pbest - x) + c2*r2*(np.tile(gbest,[num_particulas,1])-x)
+    return w*v*0.86 + 0.86*c1*r1*(pbest - x) + 0.86*c2*r2*(np.tile(gbest,[num_particulas,1])-x)
    
 
 def pso(T_ENXAME, DIM):
@@ -89,7 +89,7 @@ def pso(T_ENXAME, DIM):
         gb = np.argmin(fitPbest) # gb = indice da particula com a melhor posiçao
         v = atualizaVel(x,v,pBest,pBest[gb], T_ENXAME, linearW)  #wIter é um vetor com os valores de w a cada iteraçao
         x = x + v
-        limitaRegiao(x, 100)
+        limitaRegiao(x, 100, 0)
     
     return pBest[gb]
    
