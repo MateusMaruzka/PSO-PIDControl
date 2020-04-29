@@ -28,14 +28,14 @@ def main():
     
     np.random.seed(0)
     
-    wmin = 0.1
-    wmax = 0.2
+    wmin = 0.3
+    wmax = 0.8
     c1 = 2.05
     c2 = 2.05
     Ts = 0.1
-    Tf = 200
+    Tf = 100
     l = 0
-    n_p = 10
+    n_p = 100
     
     
     atraso = 18;
@@ -43,13 +43,14 @@ def main():
     # [18.         2.3335711]
     # P = ss.TransferFunction([1],[1, 4, 6, 4, 1])
 
-    gb, fitIter = pso.pso(fObj_pid, n_p , 2, var=2, _Wmin=wmin, _Wmax=wmax,
+    gb, fitIter = pso.pso(fObj_pid, n_p , 2, var=5, _Wmin=wmin, _Wmax=wmax,
                           _c1 = c1, _c2 = c2, P=[P, atraso], ts=Ts, tf=Tf,
                           LAMBDA=l)    
 
     metodo = "ISE_l={:2.4f}".format(l)
     f_name = "dados/"+metodo+".pickle"
     
+    print(gb, fitIter[-1])
     with open(f_name, "wb") as f:
     
         data = {'Wmin' : wmin,

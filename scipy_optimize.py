@@ -25,7 +25,8 @@ def fObj_pid(x):
     # LAMBDA = 0
     mY, mE, mDU,r,t = pid.picontrol(P,ts,tf,np.array([x]),1, atraso=atraso) # testar
     mDU = mDU[...,1:-1] - mDU[...,0:-2]
-    f = np.sum(mE**2) + 0.2*pid.ise(mDU) # MULTIOBJETIVO (LQR)
+    f = np.sum(mE**2) 
+    # + 0.2*pid.ise(mDU) # MULTIOBJETIVO (LQR)
     
     return f
 

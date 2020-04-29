@@ -30,31 +30,30 @@ def limitaRegiao(x, x_sup, x_inf):
     x[A] = x_inf
 
 
-def atualizaVel(x,v,pbest, gbest, num_particulas, w, c1 = 2, c2 = 2):
+def atualizaVel(x, v, pbest, gbest, w, c1, c2):
     
    # new_vel = np.zeros([T_ENXAME,DIM])
     r1 = np.random.random((v.shape)) # entre 0 e 1
     r2 = np.random.random((v.shape)) # entre 0 e 1
 
    # w = func_coef_inercial(atualizaVel.iteracao)
-    return 1*v + c1*r1*(pbest - x) + c2*r2*(gbest-x)
+    return w*v + c1*r1*(pbest - x) + c2*r2*(gbest-x)
 
 
 def atualizaFitness(func_fitness, posAtual, fitpBest, pbest, **args):
-    
-   # ff = np.vectorize(func_fitness)
-   
+       
     f = func_fitness(posAtual, **args)
     A = f < fitpBest # vetor de decisao
     fitpBest[A] = f[A]
-
     pbest[A] = posAtual[A]
     
 
 
-def pso(fObj,T_ENXAME, DIM, iterMax = 100, var = 5, _Wmin = 0.1,_Wmax = 0.9, _c1 = 2.05, _c2 = 2.05, **kwargs):
+def pso(fObj,T_ENXAME, DIM, iterMax = 100, var = 15, _Wmin = 0.1,_Wmax = 0.9,
+        _c1 = 2.05, _c2 = 2.05, **kwargs):
     
     
+    """
     constrictor_factor = lambda a,b : 2 / (np.abs(2-(a+b) - np.sqrt((a+b)**2 -4*(a+b))))
 
     try:
@@ -75,17 +74,15 @@ def pso(fObj,T_ENXAME, DIM, iterMax = 100, var = 5, _Wmin = 0.1,_Wmax = 0.9, _c1
         _c1 = 2.05
         _c2 = 2.05
         
-    
+    """
     
     fitIter = []
 
-    
     x = var*np.random.rand(T_ENXAME,DIM)
     v = np.random.randn(T_ENXAME,DIM)
     pBest = np.copy(x)
     
-    fitPbest = np.inf*np.ones(len(x)) 
-    atualizaFitness(fObj, x,fitPbest,pBest, **kwargs)
+    fitPbest = fObj(x, **kwargs)
     gb = np.argmin(fitPbest) 
     gbest = pBest[gb]
 
@@ -94,19 +91,20 @@ def pso(fObj,T_ENXAME, DIM, iterMax = 100, var = 5, _Wmin = 0.1,_Wmax = 0.9, _c1
     i = 0
     while i < iterMax:
 
-        v = atualizaVel(x,v,pBest,gbest, T_ENXAME,coefInercial(_Wmin,_Wmax,i,iterMax),_c2,_c1)  #wIter é um vetor com os valores de w a cada iteraçao
-        x = x + cf*v
-        limitaRegiao(x, x_sup = 100, x_inf = 0.01)
-        
+        v = atualizaVel(x,v,pBest,gbest,
+                        coefInercial(_Wmin,_Wmax,i,iterMax),
+                        _c2,_c1) 
+        x += v
+        limitaRegiao(x, x_sup = 100, x_inf = 0)
         atualizaFitness(fObj, x,fitPbest,pBest, **kwargs) # atualiza fitness atual e pBest 
         gb = np.argmin(fitPbest) # gb = indice da particula com a melhor posiçao
         gbest = pBest[gb]
-        fitIter.append(fitPbest[gb])
-        print("fit", fitIter[i])
-        print(gbest)
-        print("")
-        i = i + 1
         
+        
+        # add callback
+        fitIter.append(fitPbest[gb])
+       
+        i += 1
     return pBest[gb],fitIter
 
 
@@ -117,7 +115,7 @@ def main():
     
     # np.random.seed(0)
     
-    gb, fit = pso(esfera,10, 2, 50)
+    gb, fit = pso(esfera, 100 , 2, 50)
 
     print(gb)
     
