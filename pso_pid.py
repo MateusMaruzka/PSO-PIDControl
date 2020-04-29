@@ -17,8 +17,7 @@ def fObj_pid(x,P,ts,tf,LAMBDA):
     #print(P)
     mY, mE, mDU,r,t = pid.picontrol(P[0],ts,tf,x,len(x), atraso = P[1]) # testar
     # mDU = mDU[...,1:-1] - mDU[...,0:-2]
-    f = pid.ise(mE)
-    #+ LAMBDA*pid.ise(mDU) # MULTIOBJETIVO (LQR)
+    f = (1-LAMBDA)*pid.ise(mE) + LAMBDA*pid.ise(mDU) # MULTIOBJETIVO (LQR)
     
     return f
 
@@ -48,7 +47,7 @@ def main():
                           _c1 = c1, _c2 = c2, P=[P, atraso], ts=Ts, tf=Tf,
                           LAMBDA=l)    
 
-    metodo = "ISE"
+    metodo = "ISE_l={:2.4f}".format(l)
     f_name = "dados/"+metodo+".pickle"
     
     with open(f_name, "wb") as f:
