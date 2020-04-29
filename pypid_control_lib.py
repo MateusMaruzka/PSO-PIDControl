@@ -184,7 +184,7 @@ def picontrol(P, ts, tf, vetor_ganhos, num_controladores, atraso = 0):
         e[k] = r[k] - y[k]
         
         # PI control discretized by backwards differences
-        du = kp*(e[k-1] - e[k-1])  + ki*e[k]*ts
+        du = kp*(e[k] - e[k-1])  + ki*e[k]*ts
         u[k] = u[k-1] + du 
       
         

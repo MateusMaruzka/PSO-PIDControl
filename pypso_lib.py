@@ -91,12 +91,12 @@ def pso(fObj,T_ENXAME, DIM, iterMax = 100, var = 15, _Wmin = 0.1,_Wmax = 0.9,
     i = 0
     while i < iterMax:
 
-        v = atualizaVel(x,v,pBest,gbest,
-                        coefInercial(_Wmin,_Wmax,i,iterMax),
-                        _c2,_c1) 
+        v = atualizaVel(x, v, pBest, gbest,
+                        coefInercial(_Wmin, _Wmax, i, iterMax),
+                        _c2, _c1) 
         x += v
         limitaRegiao(x, x_sup = 100, x_inf = 0)
-        atualizaFitness(fObj, x,fitPbest,pBest, **kwargs) # atualiza fitness atual e pBest 
+        atualizaFitness(fObj, x, fitPbest, pBest, **kwargs) # atualiza fitness atual e pBest 
         gb = np.argmin(fitPbest) # gb = indice da particula com a melhor posiçao
         gbest = pBest[gb]
         
