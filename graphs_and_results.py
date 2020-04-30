@@ -26,7 +26,6 @@ def main():
     P = signal.TransferFunction([1],[1, 4, 6, 4, 1])
     files = glob.glob("dados/*.pickle")
     
-    
     fig = plt.figure()
     ax = [fig.add_subplot(221+i) for i in range(len(files))]
     

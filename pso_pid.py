@@ -31,7 +31,7 @@ def main():
     c2 = 2.05
     Ts = 0.1
     Tf = 100
-    l = 0.75
+    l = 0.1
     n_p = 100
     
     
@@ -72,3 +72,14 @@ if __name__ == "__main__":
 
     main()
     print("done")
+    
+    
+"""
+ fun: 26.35480948668638
+ message: 'Optimization terminated successfully.'
+    nfev: 264
+     nit: 1
+ success: True
+       x: array([ 0.11625663,  0.12544062,  2.38722146,  5.90464252, 98.53280363])
+
+"""
