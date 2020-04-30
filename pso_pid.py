@@ -13,20 +13,17 @@ import pickle
 
 
 def fObj_pid(x,P,ts,tf,LAMBDA):
-
+    
     #print(P)
-    mY, mE, mDU,r,t = pid.picontrol(P[0],ts,tf,x,len(x), atraso = P[1]) # testar
-    # mDU = mDU[...,1:-1] - mDU[...,0:-2]
+    mY, mE, mDU,r,t = pid.picontrol(P[0], ts, tf, x, len(x), atraso = P[1])
+    mDU = mDU[...,1:-1] - mDU[...,0:-2]
     f = (1-LAMBDA)*pid.ise(mE) + LAMBDA*pid.ise(mDU) # MULTIOBJETIVO (LQR)
     
     return f
 
-
-
-
 def main():
     
-    np.random.seed(0)
+    # np.random.seed(0)
     
     wmin = 0.3
     wmax = 0.8
@@ -34,7 +31,7 @@ def main():
     c2 = 2.05
     Ts = 0.1
     Tf = 100
-    l = 0
+    l = 0.75
     n_p = 100
     
     
