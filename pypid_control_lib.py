@@ -173,7 +173,7 @@ def step(P, ts, tf, atraso = 0):
     return y, t
 
 
-def picontrol(P, ts, tf, vetor_ganhos, num_controladores, atraso = 0):
+def picontrol(P, ts, tf, vetor_ganhos, num_controladores, atraso = 0, d = 0):
     
     Pd = P.to_discrete(ts)
     
@@ -194,7 +194,7 @@ def picontrol(P, ts, tf, vetor_ganhos, num_controladores, atraso = 0):
     e =  np.zeros([kmax, num_controladores])
     r =  np.ones([kmax, num_controladores])
 
-    yD[kmax//2:] = 0
+    yD[kmax//2:] = d
  
     kp = vetor_ganhos[:,0]
     ki = vetor_ganhos[:,1]
