@@ -25,13 +25,13 @@ def main():
     
     # np.random.seed(0)
     
-    wmin = 0.3
-    wmax = 0.8
+    wmin = 0.1
+    wmax = 0.9
     c1 = 2.05
     c2 = 2.05
     Ts = 0.1
     Tf = 100
-    l = 0.1
+    l = 0
     n_p = 100
     
     

@@ -31,13 +31,38 @@ def isimc(ts,tau):
     kc = (t+theta/3)/(k*(tc + theta))
     return np.array([[kc, kc/ti]])
     
-def zn(ts,tau):
-    Kp_zn = 0.9*tau/ts
-    Ti_zn = 3*ts
-    return np.array([[Kp_zn, Kp_zn/Ti_zn]])
+def zn(atraso,tau, ctrl):
+    
+    if ctrl == "PI":
+        
+        Kp_zn = 0.9*tau/atraso
+        Ti_zn = atraso/0.3
+        
+        return np.array([[Kp_zn, Kp_zn/Ti_zn]])
+    
+    elif ctrl == "PID":
+        
+        Kp_zn = 1.2*tau/atraso
+        Ti_zn = 2*atraso
+        Kd_zn = 0.5*atraso
+        
+        return np.array([[Kp_zn, Kp_zn/Ti_zn, Kd_zn]])
+    
+    else:
+        raise AttributeError("Atributo ctrl deve ser 'PI' ou 'PID' ")
+    
 
 
-def imc(L, T, k = 1):#
+
+def imc(atraso, tau, tauc, K = 1):
+    
+    kc = (1/K)*(tau/(tauc+atraso))
+    ti = tau
+    
+    return np.array([[kc, kc/ti]])
+
+
+def imc_old(L, T, k = 1):#
     
     theta = L
     tau = T

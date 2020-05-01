@@ -29,6 +29,14 @@ def main():
     fig = plt.figure()
     ax = [fig.add_subplot(221+i) for i in range(len(files))]
     
+    
+    
+    Kp_zn, Ki_zn = pypid.zn(1.8, 2.3335711, "PI")[0]
+    Kp_imc, Ki_imc = pypid.imc(atraso=1.8, tau = 2.3335711, tauc=1.8)[0] # skogestad 2003
+
+    y_zn,e_zn,u_zn,r_zn,t_zn = pypid.picontrol(P, 0.1, 100//2, np.array([[Kp_zn, Ki_zn]]), 1)
+    y_imc,e_imc,u_imc,r_imc,t_imc = pypid.picontrol(P, 0.1, 100//2, np.array([[Kp_imc, Ki_imc]]), 1)
+
     for idx, file_name in enumerate(files):
         
         with open(file_name, "rb") as f:
@@ -54,23 +62,22 @@ def main():
             """
             
             ll = params.get('Lambda')
-            label = data.get("Metodo").split("_")[0] + "-TVC" + r' ($\lambda = {:.2f}$)'.format(ll) \
+            label = data.get("Metodo").split("_")[0] + "-TVC" + r' ($\lambda = {:.4f}$)'.format(ll) \
                     if ll != 0 else data.get("Metodo").split("_")[0]
             
             print(label)
-            ax[idx].step(t,y[0], '--', label = label, linewidth = 1.2)
-            ax[idx].step(t,r[0], 'k--', label = "Referência", linewidth = 1)
+            ax[idx].step(t,y[0], 'b--', label = label, linewidth = 1.2)
+            ax[idx].step(t,r[0], 'r-', label = "Referência", linewidth = 0.8)
             ax[idx].set_ylabel("y(t)")
             ax[idx].set_xlabel("t")
+            
+            ax[idx].step(t, y_zn[0], 'k--', label = "Ziegler-Nichols", linewidth = 1.2)
+            ax[idx].step(t, y_imc[0], 'k-', label = r"Internal Model Control ($\tau_c = \theta$)", linewidth = 1.2)
+
             ax[idx].legend()
-            
-            # ax[1].step(t,u[0], '--', linewidth = 1.2)
-            # ax[1].set_ylabel("u(t)")
-            # ax[1].set_xlabel("t")
-            
+
             ax[idx].set_xlim([0, params.get("Tf")//2])
             ax[idx].set_ylim(bottom = 0, top = max(y[0]) + 0.1)
-            
             
             # StrMethod formatter
             # setup(ax)
