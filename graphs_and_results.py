@@ -34,8 +34,8 @@ def main():
     Kp_zn, Ki_zn = pypid.zn(1.8, 2.3335711, "PI")[0]
     Kp_imc, Ki_imc = pypid.imc(atraso=1.8, tau = 2.3335711, tauc=1.8)[0] # skogestad 2003
 
-    y_zn,e_zn,u_zn,r_zn,t_zn = pypid.picontrol(P, 0.1, 100//2, np.array([[Kp_zn, Ki_zn]]), 1)
-    y_imc,e_imc,u_imc,r_imc,t_imc = pypid.picontrol(P, 0.1, 100//2, np.array([[Kp_imc, Ki_imc]]), 1)
+    y_zn,e_zn,u_zn,r_zn,t_zn = pypid.picontrol(P, 0.1, 100//2, np.array([[Kp_zn, Ki_zn]]), 1, d=0.0001)
+    y_imc,e_imc,u_imc,r_imc,t_imc = pypid.picontrol(P, 0.1, 100//2, np.array([[Kp_imc, Ki_imc]]), 1, d=0.0001)
 
     for idx, file_name in enumerate(files):
         
@@ -47,7 +47,7 @@ def main():
             
             print(data.get('Gbest'))
             gb= data.get('Gbest')
-            y,e,u,r,t = pypid.picontrol(P, params.get('Ts'), params.get('Tf')//2, np.array([gb]), 1, atraso = 0)
+            y,e,u,r,t = pypid.picontrol(P, params.get('Ts'), params.get('Tf')//2, np.array([gb]), 1, atraso = 0, d=0.0001)
             print(np.sum(e[0]**2))
             
             """

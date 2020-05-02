@@ -13,12 +13,12 @@ import pickle
 
 from functools import wraps
 
-func = pid.itae
+func = pid.iae
 @wraps(func)
 def fObj_pid(x,P,ts,tf,LAMBDA):
     
     #print(P)
-    mY, mE, mDU,r,t = pid.picontrol(P[0], ts, tf, x, len(x), atraso = P[1])
+    mY, mE, mDU,r,t = pid.picontrol(P[0], ts, tf, x, len(x), atraso = P[1], d = 0.0001)
     mDU = mDU[...,1:-1] - mDU[...,0:-2]
     f = (1-LAMBDA)*func(mE) + LAMBDA*pid.ise(mDU) # MULTIOBJETIVO (LQR)
     
