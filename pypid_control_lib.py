@@ -199,6 +199,7 @@ def picontrol(P, ts, tf, vetor_ganhos, num_controladores, atraso = 0, d = 0):
     kp = vetor_ganhos[:,0]
     ki = vetor_ganhos[:,1]
 
+    # print(kp, ki)
     # Simulate
     for k in range(slack, kmax):
         y[k] = np.dot(B, u[k-1-atraso:k-1-atraso-(nb+1):-1]) - np.dot(A[1:], y[k-1:k-1-na:-1])
@@ -228,15 +229,15 @@ def main():
     
     Ts = 0.1
     
-    # P = scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1])
-    P = scipy.signal.TransferFunction([1], [2.3335711, 1])
+    P = scipy.signal.TransferFunction([1], [1, 4, 6, 4, 1])
+    # P = scipy.signal.TransferFunction([1], [2.3335711, 1])
 
     
-    y,e,u,r,t = picontrol(P, Ts, 200, vetor_ganhos=np.array([[15.02626755, 19.57202986]]), num_controladores=1, atraso=18)
+    y,e,u,r,t = picontrol(P, Ts, 100, vetor_ganhos=np.array([[0.25, 2.5]]), num_controladores=1, atraso=0)
     
 
     print(np.sum(e**2, axis=1))
-    plt.plot(t,e[0] ,'k.')
+    plt.plot(t,y[0] ,'k.')
     # plt.plot(t,y[1] ,'k.')
 
     
