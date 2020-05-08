@@ -1,0 +1,255 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.30.0.0
+Copyright (C) 2020 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: mateus maruzka, utfpr, LIC=----
+ 
+Tool Versions:
+Toolchain:       MDK-Lite  Version: 5.30.0.0
+Toolchain Path:  C:\Keil_v5\ARM\ARMCLANG\Bin
+C Compiler:      ArmClang.exe V6.14
+Assembler:       Armasm.exe V6.14
+Linker/Locator:  ArmLink.exe V6.14
+Library Manager: ArmAr.exe V6.14
+Hex Converter:   FromElf.exe V6.14
+CPU DLL:         SARMCM3.DLL V5.30.0.0
+Dialog DLL:      DARMCM1.DLL V1.19.3.0
+Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.7.0
+Dialog DLL:      TARMCM1.DLL V1.14.2.0
+ 
+<h2>Project:</h2>
+C:\Users\maruzka\Documents\PSO_PID_Control\stm\pso.uvprojx
+Project File Date:  05/07/2020
+
+<h2>Output:</h2>
+*** Using Compiler 'V6.14', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
+Build target 'Target 1'
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(27): warning: In file included from...
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(971): warning: implicit conversion changes signedness: 'int' to 'q15_t' (aka 'short') [-Wsign-conversion]
+  (*pQ15)[0] = (val & 0x0FFFF);
+             ~  ~~~~^~~~~~~~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(972): warning: implicit conversion changes signedness: 'int' to 'q15_t' (aka 'short') [-Wsign-conversion]
+  (*pQ15)[1] = (val >> 16) & 0x0FFFF;
+             ~ ~~~~~~~~~~~~^~~~~~~~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(993): warning: implicit conversion changes signedness: 'int' to 'q15_t' (aka 'short') [-Wsign-conversion]
+  pQ15[0] = val & 0x0FFFF;
+          ~ ~~~~^~~~~~~~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(1054): warning: implicit conversion changes signedness: 'int' to 'q7_t' (aka 'signed char') [-Wsign-conversion]
+  (*pQ7)[0] = val & 0x0FF;
+            ~ ~~~~^~~~~~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(1055): warning: implicit conversion changes signedness: 'int' to 'q7_t' (aka 'signed char') [-Wsign-conversion]
+  (*pQ7)[1] = (val >> 8) & 0x0FF;
+            ~ ~~~~~~~~~~~^~~~~~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(1056): warning: implicit conversion changes signedness: 'int' to 'q7_t' (aka 'signed char') [-Wsign-conversion]
+  (*pQ7)[2] = (val >> 16) & 0x0FF;
+            ~ ~~~~~~~~~~~~^~~~~~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(1057): warning: implicit conversion changes signedness: 'int' to 'q7_t' (aka 'signed char') [-Wsign-conversion]
+  (*pQ7)[3] = (val >> 24) & 0x0FF;
+            ~ ~~~~~~~~~~~~^~~~~~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(1220): warning: implicit conversion changes signedness: 'q31_t' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+      signBits = ((uint32_t) (__CLZ( in) - 1));
+                              ~~~~~  ^~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(1224): warning: implicit conversion changes signedness: 'q31_t' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+      signBits = ((uint32_t) (__CLZ(-in) - 1));
+                              ~~~~~ ^~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(1271): warning: implicit conversion changes signedness: 'q15_t' (aka 'short') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+      signBits = ((uint32_t)(__CLZ( in) - 17));
+                             ~~~~~  ^~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(1275): warning: implicit conversion changes signedness: 'int' to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+      signBits = ((uint32_t)(__CLZ(-in) - 17));
+                             ~~~~~ ^~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(1279): warning: implicit conversion loses integer precision: 'int' to 'q15_t' (aka 'short') [-Wimplicit-int-conversion]
+    in = (in << signBits);
+       ~  ~~~^~~~~~~~~~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(1295): warning: implicit conversion changes signedness: 'q31_t' (aka 'int') to 'unsigned int' [-Wsign-conversion]
+      out = (q15_t) (((q31_t) out * tempVal) >> 14);
+                      ^~~~~~~~~~~ ~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(1337): warning: implicit conversion changes signedness: 'int32_t' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+    n1 = __CLZ(hi) - 32;
+         ~~~~~ ^~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(1343): warning: implicit conversion changes signedness: 'int32_t' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+        n1 = __CLZ(lo);
+             ~~~~~ ^~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(1379): warning: implicit conversion changes signedness: 'unsigned int' to 'int32_t' (aka 'int') [-Wsign-conversion]
+        *normalized = (((uint32_t) lo) >> n1) | (hi << (32 - n1));
+                    ~ ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(1379): warning: implicit conversion changes signedness: 'int32_t' (aka 'int') to 'unsigned int' [-Wsign-conversion]
+        *normalized = (((uint32_t) lo) >> n1) | (hi << (32 - n1));
+                                              ~  ~~~^~~~~~~~~~~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(1394): warning: operand of ? changes signedness: 'q63_t' (aka 'long long') to 'uint64_t' (aka 'unsigned long long') [-Wsign-conversion]
+    absNum = num > 0 ? num : -num;
+           ~           ^~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(1394): warning: operand of ? changes signedness: 'q63_t' (aka 'long long') to 'uint64_t' (aka 'unsigned long long') [-Wsign-conversion]
+    absNum = num > 0 ? num : -num;
+           ~                 ^~~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(3203): warning: padding struct 'arm_cfft_instance_f64' with 2 bytes to align 'pTwiddle' [-Wpadded]
+    const float64_t *pTwiddle;         /**< points to the Twiddle factor table. */
+                     ^
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(3200): warning: padding size of 'arm_cfft_instance_f64' with 2 bytes to alignment boundary [-Wpadded]
+  typedef struct
+          ^
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(3172): warning: padding struct 'arm_cfft_instance_f32' with 2 bytes to align 'pTwiddle' [-Wpadded]
+    const float32_t *pTwiddle;         /**< points to the Twiddle factor table. */
+                     ^
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(3169): warning: padding size of 'arm_cfft_instance_f32' with 2 bytes to alignment boundary [-Wpadded]
+  typedef struct
+          ^
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(6510): warning: implicit conversion from 'int32_t' (aka 'int') to 'float' may lose precision [-Wimplicit-int-float-conversion]
+      x0 = S->x1 +  i      * xSpacing;
+                    ^      ~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(6511): warning: implicit conversion from 'int' to 'float' may lose precision [-Wimplicit-int-float-conversion]
+      x1 = S->x1 + (i + 1) * xSpacing;
+                    ~~^~~  ~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(8583): warning: implicit conversion from 'int32_t' (aka 'int') to 'float' may lose precision [-Wimplicit-int-float-conversion]
+    xdiff = X - xIndex;
+              ~ ^~~~~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(8586): warning: implicit conversion from 'int32_t' (aka 'int') to 'float' may lose precision [-Wimplicit-int-float-conversion]
+    ydiff = Y - yIndex;
+              ~ ^~~~~~
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(74): warning: cast from function call of type 'int' to non-matching type 'float' [-Wbad-function-cast]
+        return (float)rand() / (float)RAND_MAX;
+                      ^~~~~~
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(140): error: passing 'float32_t *' (aka 'float *') to parameter of incompatible type 'float'; dereference with *
+                fitness[i] = esfera(X.pData+i, 0);
+                                    ^~~~~~~~~
+                                    *(       )
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(89): note: passing argument to parameter 'x' here
+float esfera(float x, float y){
+                   ^
+28 warnings and 1 error generated.
+compiling main.c...
+".\Objects\pso.axf" - 1 Error(s), 28 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.7.0.pack
+                ARM.CMSIS.5.7.0
+                CMSIS (Cortex Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.4.0
+   * Component: DSP Variant: Source Version: 1.8.0
+
+Package Vendor: Keil
+                project-path/Keil.FrameworkCubeMX.1.0.0.pack
+                Keil.FrameworkCubeMX.1.0.0
+                STM32CubeMX generated pack description
+   * Component: STM32CubeMX Version: 1.1.0
+   * Component: Startup Version: 1.0.0
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.STM32F0xx_DFP.2.1.0.pack
+                Keil.STM32F0xx_DFP.2.1.0
+                STMicroelectronics STM32F0 Series Device Support, Drivers and Examples
+   * Component: STM32Cube Framework Version: 1.0.0
+   * Component: STM32Cube HAL Version: 1.11.0
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\Device\STM32F051R8Tx
+  .\RTE\Device\STM32F051R8Tx\STCubeGenerated\Inc
+  .\RTE\_Target_1
+  C:\Users\maruzka\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include
+  C:\Users\maruzka\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Include
+  C:\Users\maruzka\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\PrivateInclude
+  C:\Users\maruzka\AppData\Local\Arm\Packs\Keil\STM32F0xx_DFP\2.1.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include
+  C:\Users\maruzka\AppData\Local\Arm\Packs\Keil\STM32F0xx_DFP\2.1.0\Drivers\STM32F0xx_HAL_Driver\Inc
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ::Device:STM32Cube Framework:1.0.0 (API)
+
+   * Component: ARM::CMSIS:CORE:5.4.0
+
+   * Component: ARM::CMSIS:DSP:Source:1.8.0
+      Source file:   CMSIS\DSP\Source\ComplexMathFunctions\ComplexMathFunctions.c
+      Source file:   CMSIS\DSP\Source\DistanceFunctions\DistanceFunctions.c
+      Source file:   CMSIS\DSP\Source\FilteringFunctions\FilteringFunctions.c
+      Source file:   CMSIS\DSP\Source\SupportFunctions\SupportFunctions.c
+      Source file:   CMSIS\DSP\Source\SVMFunctions\SVMFunctions.c
+      Include file:  CMSIS\DSP\Include\arm_math.h
+      Source file:   CMSIS\DSP\Source\CommonTables\CommonTables.c
+      Source file:   CMSIS\DSP\Source\ControllerFunctions\ControllerFunctions.c
+      Source file:   CMSIS\DSP\Source\TransformFunctions\TransformFunctions.c
+      Source file:   CMSIS\DSP\Source\BayesFunctions\BayesFunctions.c
+      Source file:   CMSIS\DSP\Source\MatrixFunctions\MatrixFunctions.c
+      Source file:   CMSIS\DSP\Source\FastMathFunctions\FastMathFunctions.c
+      Source file:   CMSIS\DSP\Source\BasicMathFunctions\BasicMathFunctions.c
+      Source file:   CMSIS\DSP\Source\StatisticsFunctions\StatisticsFunctions.c
+
+   * Component: Keil.STM32CubeMX::Device:STM32Cube Framework:STM32CubeMX:1.1.0
+      Include file:  MX_Device.h
+      Include file:  STCubeGenerated\Inc\stm32f0xx_hal_conf.h
+      Source file:   STCubeGenerated\Src\stm32f0xx_hal_msp.c
+
+   * Component: Keil.STM32CubeMX::Device:STM32Cube HAL:1.11.0
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_i2s.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_comp.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_can.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_i2c_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_i2c.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_adc_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_dac_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_dac.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_iwdg.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_exti.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_flash_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_pwr.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_flash.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_pwr_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_crc.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_pcd.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_pcd_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_rtc.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_rtc_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_smartcard.c
+      Source file:   MDK\Driver\stm32f0xx_ll.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_cec.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_cortex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_adc.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_crc_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_dma.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_gpio.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_irda.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_rcc.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_rcc_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_gpio.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_tsc.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_rcc.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_pwr.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_spi.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_crs.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_spi.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_uart.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_usart.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_usart_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_crc.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_tim.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_usart.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_usb.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_rtc.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_tim_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_utils.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_spi_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_tim.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_i2c.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_smartcard_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_wwdg.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_uart_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_adc.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_smbus.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_comp.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_dac.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_dma.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_exti.c
+
+   * Component: Keil.STM32CubeMX::Device:Startup:1.0.0
+      Source file:   STCubeGenerated\MDK-ARM\startup_stm32f051x8.s
+      Source file:   STCubeGenerated\Src\system_stm32f0xx.c
+Target not created.
+Build Time Elapsed:  00:00:02
+</pre>
+</body>
+</html>

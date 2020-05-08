@@ -39,7 +39,7 @@ def main():
     
     fig = plt.figure(figsize=(9,9))
     ax = fig.add_subplot(211, projection='3d')
-
+    ax.view_init(50,-15)
     
     for kps, kis in zip(KP,KI):
         _, e, u, _, _, =  pypid.picontrol(P, Ts, Tf, np.array([[kps,kis]]), num_controladores=len(kp))

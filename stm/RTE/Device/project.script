@@ -1,0 +1,4 @@
+load STM32F051R8Tx 
+project name STCubeGenerated 
+project toolchain "MDK-ARM V5" 
+project path "C:\Users\maruzka\Documents\PSO_PID_Control\stm\RTE\Device\STM32F051R8Tx\" 
