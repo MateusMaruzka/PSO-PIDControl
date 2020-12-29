@@ -21,13 +21,16 @@ import pypid_control_lib as pypid
 
 plt.rcParams["font.family"] = "Times New Roman"
 
-def main():
+
+def plota(nome_pasta):
     
     P = signal.TransferFunction([1],[1, 4, 6, 4, 1])
-    files = glob.glob("dados/*.pickle")
     
-    fig = plt.figure()
-    ax = [fig.add_subplot(221+i) for i in range(len(files))]
+    
+    files = glob.glob(nome_pasta + "/*.pickle")
+    
+    fig = plt.figure(figsize=(9,3))
+    ax = [fig.add_subplot(121+i) for i in range(len(files))]
     
     
     
@@ -88,8 +91,16 @@ def main():
             
             
             
-            plt.tight_layout()            
+            plt.tight_layout()    
+            
+    # plt.savefig(nome_pasta)
+    return fig
 
+
+def main():
+    
+    plota("teste")
+            
                 
 if __name__ == "__main__":
     

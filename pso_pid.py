@@ -13,12 +13,12 @@ import pickle
 
 from functools import wraps
 
-func = pid.iae
+func = pid.ise
 @wraps(func)
 def fObj_pid(x,P,ts,tf,LAMBDA):
     
     #print(P)
-    mY, mE, mDU,r,t = pid.picontrol(P[0], ts, tf, x, len(x), atraso = P[1], d = 0.0001)
+    mY, mE, mDU,r,t = pid.picontrol(P[0], ts, tf, x, len(x), atraso = P[1], d = 0)
     mDU = mDU[...,1:-1] - mDU[...,0:-2]
     f = (1-LAMBDA)*func(mE) + LAMBDA*pid.ise(mDU) # MULTIOBJETIVO (LQR)
     
@@ -28,13 +28,13 @@ def main():
     
     # np.random.seed(0)
     
-    wmin = 0.1
-    wmax = 0.9
+    wmin = 0.8
+    wmax = 1.2
     c1 = 2.05
     c2 = 2.05
     Ts = 0.1
     Tf = 100
-    l = 0.9995
+    l = 0
     n_p = 100
     
     
@@ -47,11 +47,12 @@ def main():
                           _c1 = c1, _c2 = c2, P=[P, atraso], ts=Ts, tf=Tf,
                           LAMBDA=l)    
 
-
+    
+    print(P.to_discrete(0.1))
  
     metodo = "{:s}_l={:2.4f}".format(fObj_pid.__name__.upper(), l)
 
-    f_name = "dados/"+metodo+".pickle"
+    f_name = "teste/"+metodo+".pickle"
     
     print(gb, fitIter[-1])
     with open(f_name, "wb") as f:

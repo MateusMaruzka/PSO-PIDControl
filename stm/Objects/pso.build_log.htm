@@ -22,7 +22,7 @@ Dialog DLL:      TARMCM1.DLL V1.14.2.0
  
 <h2>Project:</h2>
 C:\Users\maruzka\Documents\PSO_PID_Control\stm\pso.uvprojx
-Project File Date:  05/07/2020
+Project File Date:  05/08/2020
 
 <h2>Output:</h2>
 *** Using Compiler 'V6.14', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
@@ -109,19 +109,82 @@ C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_m
 C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(8586): warning: implicit conversion from 'int32_t' (aka 'int') to 'float' may lose precision [-Wimplicit-int-float-conversion]
     ydiff = Y - yIndex;
               ~ ^~~~~~
-RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(74): warning: cast from function call of type 'int' to non-matching type 'float' [-Wbad-function-cast]
-        return (float)rand() / (float)RAND_MAX;
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(79): warning: cast from function call of type 'int' to non-matching type 'float' [-Wbad-function-cast]
+        return (float)rand() / (float)RAND_MAX - 0.5;
                       ^~~~~~
-RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(140): error: passing 'float32_t *' (aka 'float *') to parameter of incompatible type 'float'; dereference with *
-                fitness[i] = esfera(X.pData+i, 0);
-                                    ^~~~~~~~~
-                                    *(       )
-RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(89): note: passing argument to parameter 'x' here
-float esfera(float x, float y){
-                   ^
-28 warnings and 1 error generated.
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(79): warning: implicit conversion loses floating-point precision: 'double' to 'float' [-Wimplicit-float-conversion]
+        return (float)rand() / (float)RAND_MAX - 0.5;
+        ~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(79): warning: implicit conversion increases floating-point precision: 'float' to 'double' [-Wdouble-promotion]
+        return (float)rand() / (float)RAND_MAX - 0.5;
+               ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~ ~
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(85): warning: comparison of integers of different signs: 'int' and 'unsigned int' [-Wsign-compare]
+        for(int i = 0; i < len; i++){
+                       ~ ^ ~~~
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(118): warning: unused parameter 'X' [-Wunused-parameter]
+void updateVelocity(arm_matrix_instance_f32 X, 
+                                            ^
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(119): warning: unused parameter 'V' [-Wunused-parameter]
+                                                                                arm_matrix_instance_f32 V, 
+                                                                                                        ^
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(120): warning: unused parameter 'pBest' [-Wunused-parameter]
+                                                                                arm_matrix_instance_f32 pBest,
+                                                                                                        ^
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(121): warning: unused parameter 'gBest' [-Wunused-parameter]
+                                                                                float32_t *gBest,
+                                                                                           ^
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(122): warning: unused parameter 'ndim' [-Wunused-parameter]
+                                                                                uint32_t ndim){
+                                                                                         ^
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(118): warning: no previous prototype for function 'updateVelocity' [-Wmissing-prototypes]
+void updateVelocity(arm_matrix_instance_f32 X, 
+     ^
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(118): note: declare 'static' if the function is not intended to be used outside of this translation unit
+void updateVelocity(arm_matrix_instance_f32 X, 
+^
+static 
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(214): warning: incompatible pointer types passing 'float32_t (*)[2]' to parameter of type 'const float32_t *' (aka 'const float *') [-Wincompatible-pointer-types]
+                        arm_sub_f32(pBest+idx_gb*NDIM, x+j, aux+j, NDIM);
+                                    ^~~~~~~~~~~~~~~~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(3542): note: passing argument to parameter 'pSrcA' here
+  const float32_t * pSrcA,
+                    ^
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(214): warning: incompatible pointer types passing 'float32_t (*)[2]' to parameter of type 'const float32_t *' (aka 'const float *') [-Wincompatible-pointer-types]
+                        arm_sub_f32(pBest+idx_gb*NDIM, x+j, aux+j, NDIM);
+                                                       ^~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(3543): note: passing argument to parameter 'pSrcB' here
+  const float32_t * pSrcB,
+                    ^
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(214): warning: incompatible pointer types passing 'float32_t (*)[2]' to parameter of type 'float32_t *' (aka 'float *') [-Wincompatible-pointer-types]
+                        arm_sub_f32(pBest+idx_gb*NDIM, x+j, aux+j, NDIM);
+                                                            ^~~~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(3544): note: passing argument to parameter 'pDst' here
+        float32_t * pDst,
+                    ^
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(239): warning: incompatible pointer types passing 'float32_t (*)[2]' to parameter of type 'const float32_t *' (aka 'const float *') [-Wincompatible-pointer-types]
+                                arm_copy_f32(pBest + l*NDIM, x+l*NDIM, NDIM);
+                                             ^~~~~~~~~~~~~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(3909): note: passing argument to parameter 'pSrc' here
+  const float32_t * pSrc,
+                    ^
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(239): warning: incompatible pointer types passing 'float32_t (*)[2]' to parameter of type 'float32_t *' (aka 'float *') [-Wincompatible-pointer-types]
+                                arm_copy_f32(pBest + l*NDIM, x+l*NDIM, NDIM);
+                                                             ^~~~~~~~
+C:/Users/maruzka/AppData/Local/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/DSP/Include\arm_math.h(3910): note: passing argument to parameter 'pDst' here
+        float32_t * pDst,
+                    ^
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(171): warning: unused variable 'c1' [-Wunused-variable]
+        float32_t c1 = 4, c2 = 4;
+                  ^
+RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c(171): warning: unused variable 'c2' [-Wunused-variable]
+        float32_t c1 = 4, c2 = 4;
+                          ^
+44 warnings generated.
 compiling main.c...
-".\Objects\pso.axf" - 1 Error(s), 28 Warning(s).
+linking...
+Program Size: Code=4528 RO-data=236 RW-data=12 ZI-data=1864  
+FromELF: creating hex file...
+".\Objects\pso.axf" - 0 Error(s), 44 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -163,93 +226,92 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:5.4.0
 
    * Component: ARM::CMSIS:DSP:Source:1.8.0
-      Source file:   CMSIS\DSP\Source\ComplexMathFunctions\ComplexMathFunctions.c
-      Source file:   CMSIS\DSP\Source\DistanceFunctions\DistanceFunctions.c
-      Source file:   CMSIS\DSP\Source\FilteringFunctions\FilteringFunctions.c
-      Source file:   CMSIS\DSP\Source\SupportFunctions\SupportFunctions.c
-      Source file:   CMSIS\DSP\Source\SVMFunctions\SVMFunctions.c
-      Include file:  CMSIS\DSP\Include\arm_math.h
-      Source file:   CMSIS\DSP\Source\CommonTables\CommonTables.c
-      Source file:   CMSIS\DSP\Source\ControllerFunctions\ControllerFunctions.c
-      Source file:   CMSIS\DSP\Source\TransformFunctions\TransformFunctions.c
       Source file:   CMSIS\DSP\Source\BayesFunctions\BayesFunctions.c
+      Source file:   CMSIS\DSP\Source\FilteringFunctions\FilteringFunctions.c
+      Source file:   CMSIS\DSP\Source\CommonTables\CommonTables.c
       Source file:   CMSIS\DSP\Source\MatrixFunctions\MatrixFunctions.c
-      Source file:   CMSIS\DSP\Source\FastMathFunctions\FastMathFunctions.c
+      Include file:  CMSIS\DSP\Include\arm_math.h
+      Source file:   CMSIS\DSP\Source\DistanceFunctions\DistanceFunctions.c
+      Source file:   CMSIS\DSP\Source\ComplexMathFunctions\ComplexMathFunctions.c
+      Source file:   CMSIS\DSP\Source\SVMFunctions\SVMFunctions.c
+      Source file:   CMSIS\DSP\Source\SupportFunctions\SupportFunctions.c
       Source file:   CMSIS\DSP\Source\BasicMathFunctions\BasicMathFunctions.c
+      Source file:   CMSIS\DSP\Source\TransformFunctions\TransformFunctions.c
       Source file:   CMSIS\DSP\Source\StatisticsFunctions\StatisticsFunctions.c
+      Source file:   CMSIS\DSP\Source\FastMathFunctions\FastMathFunctions.c
+      Source file:   CMSIS\DSP\Source\ControllerFunctions\ControllerFunctions.c
 
    * Component: Keil.STM32CubeMX::Device:STM32Cube Framework:STM32CubeMX:1.1.0
-      Include file:  MX_Device.h
       Include file:  STCubeGenerated\Inc\stm32f0xx_hal_conf.h
+      Include file:  MX_Device.h
       Source file:   STCubeGenerated\Src\stm32f0xx_hal_msp.c
 
    * Component: Keil.STM32CubeMX::Device:STM32Cube HAL:1.11.0
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_i2s.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_comp.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_adc.c
       Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_can.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_i2c_ex.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_i2c.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal.c
       Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_adc_ex.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_dac_ex.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_dac.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_cec.c
+      Source file:   MDK\Driver\stm32f0xx_ll.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_comp.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_cortex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_pcd.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_tim.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_tim_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_i2c.c
       Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_iwdg.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_exti.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_flash_ex.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_pwr.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_smbus.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_tsc.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_i2s.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_smartcard.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_uart.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_uart_ex.c
       Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_flash.c
       Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_pwr_ex.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_crc.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_pcd.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_dac_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_exti.c
       Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_pcd_ex.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_rtc.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_rtc_ex.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_smartcard.c
-      Source file:   MDK\Driver\stm32f0xx_ll.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_cec.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_cortex.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_adc.c
       Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_crc_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_crc.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_dac.c
       Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_dma.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_pwr.c
       Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_gpio.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_irda.c
       Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_rcc.c
       Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_rcc_ex.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_gpio.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_tsc.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_rcc.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_pwr.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_spi.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_crs.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_spi.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_uart.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_usart.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_usart_ex.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_crc.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_tim.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_usart.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_usb.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_rtc.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_tim_ex.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_utils.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_spi_ex.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_tim.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_i2c.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_irda.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_rtc.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_rtc_ex.c
       Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_smartcard_ex.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_wwdg.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_uart_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_flash_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_spi.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_spi_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_i2c_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_crc.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_rcc.c
       Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_adc.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_smbus.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_comp.c
-      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_dac.c
       Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_dma.c
       Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_exti.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_gpio.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_pwr.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_rtc.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_wwdg.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_usart.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_i2c.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_usart.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_usart_ex.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_dac.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_usb.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_spi.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_comp.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_tim.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_crs.c
+      Source file:   Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_ll_utils.c
 
    * Component: Keil.STM32CubeMX::Device:Startup:1.0.0
-      Source file:   STCubeGenerated\MDK-ARM\startup_stm32f051x8.s
       Source file:   STCubeGenerated\Src\system_stm32f0xx.c
-Target not created.
-Build Time Elapsed:  00:00:02
+      Source file:   STCubeGenerated\MDK-ARM\startup_stm32f051x8.s
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>

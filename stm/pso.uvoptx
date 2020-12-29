@@ -73,7 +73,7 @@
         <LExpSel>0</LExpSel>
       </OPTXL>
       <OPTFL>
-        <tvExp>1</tvExp>
+        <tvExp>0</tvExp>
         <tvExpOptDlg>0</tvExpOptDlg>
         <IsCurrentTarget>1</IsCurrentTarget>
       </OPTFL>
@@ -140,7 +140,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>(105=-1,-1,-1,-1,0)</Name>
+          <Name>(105=150,186,829,544,0)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -152,9 +152,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>140</LineNumber>
+          <LineNumber>192</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134220784</Address>
+          <Address>134221442</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -163,34 +163,69 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>.\RTE\Device\STM32F051R8Tx\STCubeGenerated\Src\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\pso\RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c\140</Expression>
+          <Expression>\\pso\RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c\192</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>count</ItemText>
+          <ItemText>aux[0]</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>count</ItemText>
+          <ItemText>x[0]</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>x[NDIM*SWARM]</ItemText>
+          <ItemText>x[7]</ItemText>
+        </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>x[0][0] - x[1][0]</ItemText>
+        </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>idx_gb</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>fitBest</ItemText>
+        </Ww>
+        <Ww>
+          <count>6</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>fitness</ItemText>
         </Ww>
       </WatchWindow1>
+      <WatchWindow2>
+        <Ww>
+          <count>0</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>\\pso\RTE/Device/STM32F051R8Tx/STCubeGenerated/Src/main.c\main\fitness</ItemText>
+        </Ww>
+      </WatchWindow2>
       <MemoryWindow1>
         <Mm>
           <WinNumber>1</WinNumber>
           <SubType>0</SubType>
-          <ItemText>x[NDIM*SWARM]</ItemText>
+          <ItemText>gBest</ItemText>
           <AccSizeX>0</AccSizeX>
         </Mm>
       </MemoryWindow1>
+      <MemoryWindow4>
+        <Mm>
+          <WinNumber>4</WinNumber>
+          <SubType>0</SubType>
+          <ItemText>score</ItemText>
+          <AccSizeX>0</AccSizeX>
+        </Mm>
+      </MemoryWindow4>
       <Tracepoint>
         <THDelay>0</THDelay>
       </Tracepoint>
@@ -211,7 +246,7 @@
         <AscS3>0</AscS3>
         <aSer3>0</aSer3>
         <eProf>0</eProf>
-        <aLa>0</aLa>
+        <aLa>1</aLa>
         <aPa1>0</aPa1>
         <AscS4>0</AscS4>
         <aSer4>0</aSer4>
@@ -253,7 +288,7 @@
 
   <Group>
     <GroupName>:STM32CubeMX:Common Sources</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -297,7 +332,7 @@
 
   <Group>
     <GroupName>::CMSIS</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>1</RteFlg>

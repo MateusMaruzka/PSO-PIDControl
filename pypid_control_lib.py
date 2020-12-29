@@ -124,7 +124,8 @@ def itae(e):
     return np.dot(np.abs(e),k)
 
 def tvc(u):
-    return ise(u[...,1:-1] - u[...,0:-2])
+
+    return np.sum((u[...,1:-1] - u[...,0:-2])**2)
 
 def step_info(t,yout): 
     #t = iter(t1)
@@ -141,7 +142,7 @@ def step_info(t,yout):
     except IndexError:
         ts = 99
    # print("Ts %f"%t[A][0])
-    return os, tr, ts, tp
+    return os, tr, ts
 
 def step(P, ts, tf, atraso = 0):
     
@@ -210,9 +211,11 @@ def picontrol(P, ts, tf, vetor_ganhos, num_controladores, atraso = 0, d = 0):
         e[k] = r[k] - y[k]
         
         # PI control discretized by backwards differences
-        du = kp*(e[k] - e[k-1])  + ki*e[k]*ts
+        # u[k] - u[k-1] = (kp+ki*ts)e[k] - kp*e[k-1]
+        #  z - 1 = (kp+ki*ts)z - kp
+        # Cpid = [(kp+ki*ts)z - kp]/(z - 1)
+        du = kp*(e[k] - e[k-1])  + ki*e[k]*ts 
         u[k] = u[k-1] + du 
-      
         
   
     y = y[slack:]
@@ -233,7 +236,7 @@ def main():
     # P = scipy.signal.TransferFunction([1], [2.3335711, 1])
 
     
-    y,e,u,r,t = picontrol(P, Ts, 100, vetor_ganhos=np.array([[0.25, 2.5]]), num_controladores=1, atraso=0)
+    y,e,u,r,t = picontrol(P, Ts, 100, vetor_ganhos=np.array([[0.5, .1]]), num_controladores=1, atraso=0)
     
 
     print(np.sum(e**2, axis=1))

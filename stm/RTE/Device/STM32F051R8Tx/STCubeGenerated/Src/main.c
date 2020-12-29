@@ -42,6 +42,7 @@
 #define NDIM 2
 #define SWARM 10
 
+#define ITER_MAX 50
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -65,13 +66,17 @@ void fillVector(float *vector, unsigned int len);
 
 float esfera(float x, float y);
 
+unsigned int argmin(float *vector, unsigned int len);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
 float genRandomNumber(void){
-	return (float)rand() / (float)RAND_MAX;
+	//static int i = 0;
+	//return i++;
+	return (float)rand() / (float)RAND_MAX - 0.5;
 }
 
 
@@ -99,7 +104,7 @@ unsigned int argmin(float *vector, unsigned int len){
 	unsigned int idx = 0;
 	float min = 0;
 	
-	for(int i = 0; i < len; i++){
+	for(unsigned int i = 0; i < len; i++){
 		if (*(vector+i) < min){
 			idx = i;
 		}
@@ -109,12 +114,23 @@ unsigned int argmin(float *vector, unsigned int len){
 }
 	
 
+
+void updateVelocity(arm_matrix_instance_f32 X, 
+										arm_matrix_instance_f32 V, 
+										arm_matrix_instance_f32 pBest,
+										float32_t *gBest,
+										uint32_t ndim){
+											
+	// v = v*w + c1*r1(pbest-x) + c2*r2(gbest - x)
+											
+}
 /* USER CODE END 0 */
 
 /**
   * @brief  The application entry point.
   * @retval int
   */
+
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -141,22 +157,96 @@ int main(void)
   /* USER CODE BEGIN 2 */	
 
 	// Swarm`s position and velicity
-	float32_t x[SWARM][NDIM], v[SWARM][NDIM], fitness[SWARM];
+	float32_t x[SWARM][NDIM], 
+						v[SWARM][NDIM], 
+						fitness[SWARM],
+						fitBest[SWARM],
+						pBest[SWARM][NDIM],
+						aux[SWARM][NDIM];
 	
 	// Initialize the matrices
 	fillVector((float32_t *)x, NDIM*SWARM);
 	fillVector((float32_t *)v, NDIM*SWARM);
 	
-	arm_matrix_instance_f32 X, V, FITNESS;
+	float32_t c1 = 4, c2 = 4;
+	
+	// pBest recebe a posicao do enxame
+	arm_copy_f32((const float32_t *)x, (float32_t *)pBest, NDIM*SWARM);
+
+	arm_matrix_instance_f32 X, V, FITNESS, PBEST, AUX, FITBEST;
 
 	arm_mat_init_f32(&X, SWARM, NDIM, (float32_t *)x);
 	arm_mat_init_f32(&V, SWARM, NDIM, (float32_t *)v);
+	
 	arm_mat_init_f32(&FITNESS, SWARM, 1, fitness);
-
-	for(int i = 0; i < SWARM; i++){
-		fitness[i] = esfera(x[i][0], x[i][0]);	
+	arm_mat_init_f32(&FITBEST, SWARM, 1, fitBest);
+	
+	arm_mat_init_f32(&PBEST, SWARM, NDIM, (float32_t *)pBest);
+	arm_mat_init_f32(&AUX, SWARM,NDIM, (float32_t *)aux);
+	
+	
+	for(unsigned int i = 0; i < SWARM; i++){
+		arm_power_f32((float32_t *)(x+i), NDIM, fitness+i);
 	}
+	
+	arm_mat_scale_f32(&FITNESS, 1.0, &FITBEST);
+
+
+	// Função Esfera implementada de outra maneira
+
+	float32_t fitgBest;
+	uint32_t idx_gb = 0;
+	arm_min_f32(fitBest, SWARM, &fitgBest, &idx_gb);
+	
+	for(int i = 0; i < ITER_MAX; i++){
 		
+		
+		// Calculando a velocidade de cada partícula
+		arm_mat_scale_f32(&V, 0.5, &V);
+		
+		arm_mat_sub_f32(&PBEST, &X, &AUX);
+		
+		arm_mat_scale_f32(&AUX, 0.5, &AUX);
+		
+		arm_mat_add_f32(&V, &AUX, &V);
+	
+		for(unsigned int j = 0; j < SWARM; j++){
+			arm_sub_f32(pBest+idx_gb*NDIM, x+j, aux+j, NDIM);
+			//arm_power_f32((float32_t *)(x+i), NDIM, aux+i);
+		}
+		
+		arm_mat_scale_f32(&AUX, 0.5, &AUX);
+
+		arm_mat_add_f32(&V, &AUX, &V);
+		
+		// Fim calculo velocidade
+		
+		// Incrementa posicao
+		arm_mat_add_f32(&X, &V, &X);	
+		
+		
+		// Função Esfera implementada de outra maneira
+		for(int k = 0; k < SWARM; k++){
+			arm_power_f32((float32_t *)(x+k), NDIM, fitness+k);
+		}
+		
+		// Atualiza pbest
+		for(unsigned int l = 0; l < SWARM; l++){
+			
+			if(fitness[l] <  fitBest[l] || (int)fitBest[l] == -1){
+				
+				fitBest[l] = fitness[l];
+				arm_copy_f32(pBest + l*NDIM, x+l*NDIM, NDIM);
+				
+			}
+			
+		}
+		// Encontra gbest
+		arm_min_f32(fitBest, SWARM, &fitgBest, &idx_gb);
+	
+	
+	}
+	
 	
   /* USER CODE END 2 */
 
