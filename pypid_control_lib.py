@@ -12,6 +12,8 @@ import sys
 
 import scipy.signal
 import matplotlib.pyplot as plt
+import types
+
 
 def simc(ts, tau):
     theta = ts
@@ -174,7 +176,18 @@ def step(P, ts, tf, atraso = 0):
     return y, t
 
 
-def picontrol(P, ts, tf, vetor_ganhos, num_controladores, atraso = 0, d = 0):
+def picontrol(P, ts, tf, vetor_ganhos, num_controladores, atraso = 0, d = 0, pid_discrete_function=0):
+    
+
+    if isinstance(pid_discrete_function, types.FunctionType):
+        picontrol.func = pid_discrete_function
+    else:
+        
+        picontrol.func = lambda e,u,k, kp, ki: kp*(e[k] - e[k-1])  + ki*e[k]*ts + u[k-1]
+        # def picontrol_function(e, u, k, kp, ki):
+        #     return kp*(e[k] - e[k-1])  + ki*e[k]*ts + u[k-1]
+        
+        # picontrol.func = picontrol_function
     
     Pd = P.to_discrete(ts)
     
@@ -210,12 +223,17 @@ def picontrol(P, ts, tf, vetor_ganhos, num_controladores, atraso = 0, d = 0):
         # error
         e[k] = r[k] - y[k]
         
+        
+        u[k] = picontrol.func(e, u,k, kp, ki)
         # PI control discretized by backwards differences
         # u[k] - u[k-1] = (kp+ki*ts)e[k] - kp*e[k-1]
         #  z - 1 = (kp+ki*ts)z - kp
         # Cpid = [(kp+ki*ts)z - kp]/(z - 1)
-        du = kp*(e[k] - e[k-1])  + ki*e[k]*ts 
-        u[k] = u[k-1] + du 
+        
+        
+        # u[k] = picontrol.discrete_pid_function(e, u)
+        # du = kp*(e[k] - e[k-1])  + ki*e[k]*ts 
+        # u[k] = u[k-1] + du 
         
   
     y = y[slack:]
@@ -236,7 +254,8 @@ def main():
     # P = scipy.signal.TransferFunction([1], [2.3335711, 1])
 
     
-    y,e,u,r,t = picontrol(P, Ts, 100, vetor_ganhos=np.array([[0.5, .1]]), num_controladores=1, atraso=0)
+    y,e,u,r,t = picontrol(P, Ts, 100, vetor_ganhos=np.array([[0.5, .1]]),\
+                          num_controladores=1, atraso=0, pid_discrete_function= lambda e,u,k,kp,ki: 1/k)
     
 
     print(np.sum(e**2, axis=1))
@@ -245,8 +264,13 @@ def main():
 
     
 
-
+        
+        
 if __name__ == "__main__":
+    
+    if isinstance(main, types.FunctionType):
+        print("sucesso")
     main()
+    
 
 
